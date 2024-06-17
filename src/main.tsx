@@ -1,15 +1,49 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './pages/home/App.tsx';
+import Home from './pages/home';
 import './index.css';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import StackSpinner from '@components/stdlib/loader/StackSpinner';
+
+const SelfHosted = React.lazy(() => import('@pages/selfhosted'));
+const Blog = React.lazy(() => import('@pages/blog'));
+const About = React.lazy(() => import('@pages/about'));
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home />,
+    children: [
+      {
+        path: 'selfhosted',
+        element: (
+          <Suspense fallback={<StackSpinner />}>
+            <SelfHosted />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'blog',
+        element: (
+          <Suspense fallback={<StackSpinner />}>
+            <Blog />
+          </Suspense>
+        ),
+      },
+      {
+        path: 'about',
+        element: (
+          <Suspense fallback={<StackSpinner />}>
+            <About />
+          </Suspense>
+        ),
+      },
+    ],
+  },
+]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-      </Routes>
-    </BrowserRouter>
+    <RouterProvider router={router} />
   </React.StrictMode>
 );

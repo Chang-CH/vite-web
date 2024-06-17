@@ -10,7 +10,8 @@
     /* Aliases */
     "paths": {
       "@components/*": ["src/components/*"],
-      "@pages/*": ["src/pages/*"]
+      "@pages/*": ["src/pages/*"],
+      "@theme/*": ["src/theme/*"]
     },
 
     /* Bundler mode */

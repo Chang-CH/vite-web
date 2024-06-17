@@ -24,8 +24,6 @@ $border-width: 2px;
 }
 
 .divContent {
-  width: 100%;
-  height: 100%;
   display: flex;
   position: relative;
   align-items: center;
@@ -44,7 +42,7 @@ $border-width: 2px;
 }
 
 .edgeSpinner {
-  content: "";
+  content: '';
   position: absolute;
 
   top: $border-width;
@@ -56,7 +54,7 @@ $border-width: 2px;
   opacity: 0;
 
   &:before {
-    content: "";
+    content: '';
     background: conic-gradient(#f5165d 0deg, #3086e9 125deg, #000 270deg);
     position: inherit;
     z-index: -499;
@@ -67,6 +65,7 @@ $border-width: 2px;
 
     // if height > width, aspect ratio will make the width match the height.
     height: 200%;
+    width: 200%;
     aspect-ratio: 1;
     // if width >= height, height of bottom padding is 200% of width, total height is 200% width.
     padding-bottom: 200%; // padding % is determined by width

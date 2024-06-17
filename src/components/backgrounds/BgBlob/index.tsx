@@ -1,28 +1,29 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import styles from './styles.module.css';
-import debounce from 'lodash/debounce';
+import { throttle } from 'lodash';
 
 // isolate the client component so children of background do not need to be client component
 const BgBlob = () => {
   const blobRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const moveBlob = debounce((e: MouseEvent) => {
-      if (!blobRef.current) return;
-      blobRef.current.animate(
+  const moveBlob = useCallback(
+    throttle((e: MouseEvent) => {
+      blobRef.current?.animate(
         {
           left: `${e.clientX + window.scrollX}px`,
           top: `${e.clientY + window.scrollY}px`,
         },
         {
-          duration: 3000,
+          duration: 5000,
           fill: 'forwards',
         }
       );
-    }, 30);
+    }, 300),
+    [blobRef.current]
+  );
 
+  useEffect(() => {
     document.onmousemove = moveBlob;
   });
 

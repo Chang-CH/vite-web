@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { FaVolumeMute } from "react-icons/fa";
-import { pieceMarbleMachine } from "./constants";
-import { keyMap } from "./sounds/sounds";
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { FaVolumeMute } from 'react-icons/fa';
+import { pieceMarbleMachine } from './constants';
+import { keyMap } from './sounds/sounds';
 
 // constants
 const piece = pieceMarbleMachine;
@@ -40,7 +40,7 @@ const MidiPlayer = () => {
       ctx.clearRect(0, 0, width, height);
 
       // Draw vertical lines
-      ctx.strokeStyle = "white";
+      ctx.strokeStyle = 'white';
       for (let i = 1; i <= lineCount; i++) {
         const x = i * lineSpacing;
         ctx.beginPath();
@@ -50,7 +50,7 @@ const MidiPlayer = () => {
       }
 
       // util function to draw a note
-      const drawNote = (lane: number, ypos: number, colour = "white") => {
+      const drawNote = (lane: number, ypos: number, colour = 'white') => {
         ctx.beginPath();
         ctx.arc((lane + 1) * lineSpacing, ypos * height, 10, 0, 2 * Math.PI);
         ctx.fillStyle = colour;
@@ -105,10 +105,10 @@ const MidiPlayer = () => {
   useEffect(() => {
     if (canvasRef.current === null || audioRef.current === null) return;
     const canvas: HTMLCanvasElement = canvasRef.current;
-    const context: CanvasRenderingContext2D | null = canvas.getContext("2d");
+    const context: CanvasRenderingContext2D | null = canvas.getContext('2d');
     if (context === null) return;
 
-    const AudioContext = window.AudioContext || window?.webkitAudioContext;
+    const AudioContext = window.AudioContext;
     const audioContext = new AudioContext();
     audioContextRef.current = audioContext;
 
@@ -117,7 +117,7 @@ const MidiPlayer = () => {
         node: audioContext.createBufferSource(),
         buffer: null,
       };
-      fetch(`/components/MidiPlayer/${keyMap?.[usedKey]}`)
+      fetch(`/src/components/gizmos/MidiPlayer/${keyMap?.[usedKey]}`)
         .then(res => res.arrayBuffer())
         .then(res => audioContext.decodeAudioData(res))
         .then(res => {
@@ -139,7 +139,7 @@ const MidiPlayer = () => {
       animationFrameId && window.cancelAnimationFrame(animationFrameId);
       audioContextRef.current
         ?.suspend()
-        .catch(() => console.error("failed to suspend audio context"));
+        .catch(() => console.error('failed to suspend audio context'));
     };
   }, [draw]);
 
@@ -148,7 +148,7 @@ const MidiPlayer = () => {
       <button
         className="relative flex justify-center items-center w-full"
         onClick={() => {
-          if (audioContextRef?.current?.state === "suspended") {
+          if (audioContextRef?.current?.state === 'suspended') {
             audioContextRef.current?.resume().catch(err => console.log(err));
           }
           if (!audioPlaying) {
@@ -162,21 +162,21 @@ const MidiPlayer = () => {
         {audioPlaying ? null : (
           <FaVolumeMute
             style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              width: "30%",
-              height: "30%",
-              translate: "-50% -50%",
+              position: 'absolute',
+              left: '50%',
+              top: '50%',
+              width: '30%',
+              height: '30%',
+              translate: '-50% -50%',
             }}
           />
         )}
         <canvas
           style={{
-            maxHeight: "90vh",
-            minHeight: "400px",
-            width: "100%",
-            height: "100%",
+            maxHeight: '90vh',
+            minHeight: '400px',
+            width: '100%',
+            height: '100%',
           }}
           ref={canvasRef}
         />
