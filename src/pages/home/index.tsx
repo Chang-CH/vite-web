@@ -26,11 +26,8 @@ function App() {
               </a>
             </div>
             <div className={styles.divLinks}>
-              <Link to="/about">
-                <p className={styles.textLink}>about</p>
-              </Link>
-              <Link to="/blog">
-                <p className={styles.textLink}>blog</p>
+              <Link to="/projects">
+                <p className={styles.textLink}>projects</p>
               </Link>
               <Link to="/selfhosted">
                 <p className={styles.textLink}>selfhosted</p>

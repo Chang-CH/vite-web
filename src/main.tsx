@@ -4,11 +4,10 @@ import Home from './pages/home';
 import './index.css';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import StackSpinner from '@components/stdlib/loader/StackSpinner';
-import BlogArticle from '@pages/blog/article';
+import MarkdownArticle from '@components/markdown/MarkdownPage';
 
 const SelfHosted = React.lazy(() => import('@pages/selfhosted'));
-const Blog = React.lazy(() => import('@pages/blog'));
-const About = React.lazy(() => import('@pages/about'));
+const Projects = React.lazy(() => import('@pages/projects'));
 
 const router = createBrowserRouter([
   {
@@ -17,33 +16,36 @@ const router = createBrowserRouter([
   },
   {
     path: '/selfhosted',
-    element: <SelfHosted />,
-  },
-  {
-    path: '/blog',
     element: (
       <Suspense fallback={<StackSpinner />}>
-        <Blog />
+        <SelfHosted />
       </Suspense>
     ),
   },
   {
-    path: '/blog/:article',
-    element: <BlogArticle />,
-    loader: ({ params }) =>
-      import(`@pages/blog/article/markdown/${params.article}.mdx`).then(
-        res => ({
-          MDXContent: res.default,
-        })
-      ),
-  },
-  {
-    path: '/about',
+    path: '/projects',
     element: (
       <Suspense fallback={<StackSpinner />}>
-        <About />
+        <Projects />
       </Suspense>
     ),
+  },
+  {
+    path: '/projects/:article',
+    element: <MarkdownArticle />,
+    loader: ({ params }) => {
+      return Promise.all([
+        import(`@markdown/projects/${params.article}/index.mdx`),
+        import(`@markdown/projects/${params.article}/components.ts`).catch(
+          () => ({})
+        ),
+      ]).then(res => {
+        return {
+          MDXContent: res[0].default,
+          CustomComponents: res[1].default,
+        };
+      });
+    },
   },
 ]);
 

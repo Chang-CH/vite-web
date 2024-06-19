@@ -2,7 +2,7 @@ import TurboCard from '@components/stdlib/card/TurboCard';
 import styles from './s.module.scss';
 import BgDots from '@components/backgrounds/BgDots';
 
-function About() {
+function Projects() {
   return (
     <div className={styles.rootContainer}>
       <a
@@ -20,4 +20,4 @@ function About() {
   );
 }
 
-export default About;
+export default Projects;
