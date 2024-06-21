@@ -47,6 +47,25 @@ const router = createBrowserRouter([
       });
     },
   },
+  {
+    path: '/projects/:projectName/:article',
+    element: <MarkdownArticle />,
+    loader: ({ params }) => {
+      return Promise.all([
+        import(
+          `@markdown/projects/${params.projectName}/${params.article}/index.mdx`
+        ),
+        import(
+          `@markdown/projects/${params.projectName}/${params.article}/components.ts`
+        ).catch(() => ({})),
+      ]).then(res => {
+        return {
+          MDXContent: res[0].default,
+          CustomComponents: res[1].default,
+        };
+      });
+    },
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

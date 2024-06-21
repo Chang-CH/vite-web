@@ -1,0 +1,129 @@
+## Synchronization in Java
+
+In Java, synchronization is achieved through the `synchronized` keyword. This keyword can be applied to methods or code blocks.
+
+```java
+public synchronized void increment() {
+    this.count++;
+}
+
+public void increment(Object toIncrement) {
+    synchronized (toIncrement) {
+        toIncrement.count++;
+    }
+}
+```
+
+Each object in Java has an associated monitor. The monitor has several methods, notable ones being:
+
+1. `enter()`: Attempt to acquire the lock. If the lock is already held by another thread, the current thread is blocked, until it is its turn. The same thread can enter a monitor multiple times.
+2. `wait()`: Block the current thread until `notify()` or `notifyAll()` is called on the monitor object.
+3. `notifyAll()`: Wake up all threads waiting on the monitor object.
+
+When we declare a method as `synchronized`, the compiled code is effectively:
+
+<SideGrid>
+```java
+class Example {
+    public static synchronized void stincrement() {
+        this.count++;
+    }
+
+    public synchronized void increment() {
+        this.count++;
+    }
+
+}
+
+````
+
+```java
+class Example {
+    public void increment() {
+        synchronized (this) {
+            this.count++;
+        }
+    }
+
+    public static void stincrement() {
+        synchronized (ClassName.class) {
+            this.count++;
+        }
+    }
+}
+
+````
+
+</SideGrid>
+
+What this means is that two distinct static synchronized methods in the same class will block each other, as they are synchronized on the same class object:
+
+```java
+public class Example {
+    public static int count = 1;
+
+    public static synchronized void stIncrement() {
+        for (int i = 0; i < 10; i++) {
+            this.count = this.count + 1;
+        }
+    }
+
+    public static synchronized void stDouble() {
+        for (int i = 0; i < 10; i++) {
+            this.count = this.count * 2;
+        }
+    }
+}
+
+public class Thread1 extends Runnable {
+    public void run() {
+        Example.stIncrement();
+    }
+}
+
+public class Thread2 extends Runnable {
+    public void run() {
+        Example.stDouble();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Thread t1 = new Thread(new Thread1());
+        Thread t2 = new Thread(new Thread2());
+        t1.start();
+        t2.start();
+        t1.join();
+        t2.join();
+        System.out.println(Example.count);
+    }
+}
+```
+
+This might not be the desired behaviour, as we might only want to synchronize on the method, and not the class object. To achieve this, we can use a `synchronized` block:
+
+```java
+public class Example {
+    public static int count = 1;
+    private static Object incLock = new Object();
+    private static Object doubleLock = new Object();
+
+    public static void stIncrement() {
+        synchronized (incLock) {
+            for (int i = 0; i < 10; i++) {
+                this.count = this.count + 1;
+            }
+        }
+    }
+
+    public static synchronized void stDouble() {
+        synchronized (doubleLock) {
+            for (int i = 0; i < 10; i++) {
+                this.count = this.count * 2;
+            }
+        }
+    }
+}
+```
+
+Now, the two methods will not block each other, as they are synchronized on different objects.
