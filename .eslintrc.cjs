@@ -16,7 +16,6 @@ module.exports = {
     ecmaVersion: 'latest',
   },
   rules: {
-    'mdx/code-blocks': true,
     indent: ['error', 2],
     'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single'],
