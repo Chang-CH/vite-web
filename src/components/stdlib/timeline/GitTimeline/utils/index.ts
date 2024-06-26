@@ -4,24 +4,20 @@ export const convertPoints = (
     unitY,
     startX,
     startY,
-    endX,
-    endY,
   }: {
     unitX: number;
     unitY: number;
     startX: number;
     startY: number;
-    endX: number;
-    endY: number;
   },
   offset: number,
-  data: ["branch" | "merge", number][],
+  data: ['branch' | 'merge', number][],
   horizontal?: boolean
 ) => {
   const points: [number, number][] = [];
   offset *= horizontal ? unitY : unitX;
   for (const action of data) {
-    if (action[0] === "branch") {
+    if (action[0] === 'branch') {
       points.push(
         horizontal ? [action[1] * unitX, startY] : [startX, action[1] * unitY]
       );

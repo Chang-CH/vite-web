@@ -1,5 +1,5 @@
-import Image from "next/image";
-import styles from "./s.module.css";
+import Image from 'next/image';
+import styles from './s.module.css';
 
 export interface TimelineData {
   title: string;
@@ -10,7 +10,7 @@ export interface TimelineData {
 }
 const Timeline = ({ data }: { data: TimelineData[] }) => {
   return (
-    <div style={{ width: "100%" }}>
+    <div style={{ width: '100%' }}>
       {data.map((entry, index) => {
         return (
           <>
@@ -34,7 +34,7 @@ const Timeline = ({ data }: { data: TimelineData[] }) => {
                     </p>
                   ))}
                 </div>
-                <div style={{ width: "100%" }}>{entry.description}</div>
+                <div style={{ width: '100%' }}>{entry.description}</div>
               </div>
             </div>
             {index < data.length - 1 ? (

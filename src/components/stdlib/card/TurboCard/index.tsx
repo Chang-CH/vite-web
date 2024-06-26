@@ -1,4 +1,4 @@
-import styles from "./s.module.scss";
+import styles from './s.module.scss';
 
 /**
  * Card with hover effect inspired by TurboRepo home page.

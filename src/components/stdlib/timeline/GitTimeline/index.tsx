@@ -1,4 +1,4 @@
-import { convertData, convertPath, convertPoints } from "./utils";
+import { convertData, convertPath, convertPoints } from './utils';
 
 export interface TimelineData {
   title: string;
@@ -8,40 +8,39 @@ export interface TimelineData {
   timeline: string;
 }
 
-// eslint-disable-next-line unused-imports/no-unused-vars
-const GitTimeline = ({ data }: { data: TimelineData[] }) => {
+const GitTimeline = () => {
   const tempData = [
     {
-      company: "NUS",
-      role: "student",
+      company: 'NUS',
+      role: 'student',
       start: 1,
       end: 14,
-      color: "#f5165d",
+      color: '#f5165d',
       offset: 0,
     },
 
     {
-      company: "NUS",
-      role: "Teaching Assistant",
+      company: 'NUS',
+      role: 'Teaching Assistant',
       start: 3,
       end: 9,
-      color: "#b40471",
+      color: '#b40471',
       offset: 1,
     },
     {
-      company: "Shopee",
-      role: "SWE",
+      company: 'Shopee',
+      role: 'SWE',
       start: 7,
       end: 9,
-      color: "#7716f5",
+      color: '#7716f5',
       offset: 2,
     },
     {
-      company: "F5",
-      role: "SWE",
+      company: 'F5',
+      role: 'SWE',
       start: 11,
       end: 13,
-      color: "#3086e9",
+      color: '#3086e9',
       offset: 1,
     },
   ];
@@ -55,9 +54,9 @@ const GitTimeline = ({ data }: { data: TimelineData[] }) => {
     if (arrIdx === 0)
       return `M ${values.startX} ${values.startY} L ${values.endX} ${values.endY}`;
 
-    const data: ["branch" | "merge", number][] = [
-      ["branch", item.start - 1],
-      ["merge", item.end],
+    const data: ['branch' | 'merge', number][] = [
+      ['branch', item.start - 1],
+      ['merge', item.end],
     ];
 
     return convertPath(
@@ -70,22 +69,22 @@ const GitTimeline = ({ data }: { data: TimelineData[] }) => {
   return (
     <div
       className="w-full h-1/2"
-      style={{ height: "300px", width: "1000px", position: "relative" }}
+      style={{ height: '300px', width: '1000px', position: 'relative' }}
     >
       <div
         style={{
           paddingTop: `${(height / width) * 100}%`,
-          backgroundColor: "#ff000033",
-          position: "relative",
+          backgroundColor: '#ff000033',
+          position: 'relative',
         }}
       >
         {tempData.map((data, idx) => (
           <button
             style={{
-              position: "absolute",
+              position: 'absolute',
               top: `${100 - ((data.offset + 1) * 100) / 4}%`,
               left: `${((data.start + data.end - 2) * 50) / 15}%`,
-              transform: "translate(-10%, -25%)",
+              transform: 'translate(-10%, -25%)',
             }}
             key={idx}
           >
@@ -97,7 +96,7 @@ const GitTimeline = ({ data }: { data: TimelineData[] }) => {
         height="100%"
         width="100%"
         viewBox={`0 0 ${width} ${height}`}
-        style={{ zIndex: -1, position: "absolute" }}
+        style={{ zIndex: -1, position: 'absolute' }}
       >
         {paths
           .map((path1, idx) => (

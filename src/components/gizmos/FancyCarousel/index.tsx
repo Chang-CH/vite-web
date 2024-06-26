@@ -1,7 +1,4 @@
-"use client";
-
-import Image from "next/image";
-import { useState } from "react";
+import { useState } from 'react';
 
 export interface CarouselData {
   image: string;
@@ -26,7 +23,7 @@ const FancyCarousel = ({
   style?: React.CSSProperties;
   className?: string;
 }) => {
-  const [selected, _setSelected] = useState(0);
+  const [selected] = useState(0);
   // {source.map((data) => {
   //     return (
   //         <div>
@@ -46,7 +43,7 @@ const FancyCarousel = ({
   return (
     <div
       style={style}
-      className={`flex gap-[3vmin] ${className ?? ""}`}
+      className={`flex gap-[3vmin] ${className ?? ''}`}
       {...rest}
     >
       {source.map((data, index) => {
@@ -60,11 +57,10 @@ const FancyCarousel = ({
             } bg-white shadow-md opacity-80`}
           >
             {data.image ? (
-              <Image
+              <img
                 src={data.image}
                 alt={data.title}
-                fill
-                style={{ objectFit: "cover" }}
+                style={{ objectFit: 'cover' }}
               />
             ) : (
               <p>{data.title}</p>

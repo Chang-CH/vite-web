@@ -1,7 +1,7 @@
-"use client";
-import { useEffect, useState } from "react";
+'use client';
+import { useEffect, useState } from 'react';
 
-const RANDOMIZE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const RANDOMIZE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 const RandomizeText = ({
   children,
@@ -13,7 +13,7 @@ const RandomizeText = ({
   const text = children.toUpperCase();
   const [iterations, setIterations] = useState(text.length * loops);
 
-  let result = "";
+  let result = '';
   for (let i = 0; i < text.length; i++) {
     if (i < (text.length * loops - iterations) / loops) {
       result += text[i];

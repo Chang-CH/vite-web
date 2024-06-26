@@ -1,4 +1,4 @@
-import styles from "./s.module.css";
+import styles from './s.module.css';
 
 const BrutalistCard = ({
   children,

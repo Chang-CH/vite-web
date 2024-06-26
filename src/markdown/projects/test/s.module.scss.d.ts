@@ -1,4 +1,4 @@
 declare const classNames: {
-  readonly loader: "loader";
+  readonly loader: 'loader';
 };
 export = classNames;

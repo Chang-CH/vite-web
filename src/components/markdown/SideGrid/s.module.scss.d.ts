@@ -1,4 +1,4 @@
 declare const classNames: {
-  readonly side: "side";
+  readonly side: 'side';
 };
 export = classNames;
