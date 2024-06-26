@@ -10,11 +10,13 @@ module.exports = {
     'eslint:recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'plugin:@typescript-eslint/recommended',
+    'plugin:mdx/recommended',
   ],
   parserOptions: {
     ecmaVersion: 'latest',
   },
   rules: {
+    'mdx/code-blocks': true,
     indent: ['error', 2],
     'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single'],
