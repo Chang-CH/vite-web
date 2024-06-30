@@ -13,6 +13,7 @@
       "@pages/*": ["src/pages/*"],
       "@theme/*": ["src/theme/*"]
     },
+    "outDir": "dist",
 
     /* Bundler mode */
     "moduleResolution": "bundler",
