@@ -1,0 +1,32 @@
+#CSS Box model
+
+An element's actual width is calculated as `width + padding + border`. The same goes for the height. The `margin` is not included in the calculation.
+
+This means that if we have a div with `width: 100%`, adding padding will cause it to overflow its parent element.
+
+```css
+.parent {
+  width: 100vw;
+}
+
+.child {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid black;
+}
+```
+
+To fix this, we use `box-sizing: border-box`. This changes the calculated width to include padding and border.
+
+```css
+.parent {
+  width: 100vw;
+}
+
+.child {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+```

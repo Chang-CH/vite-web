@@ -15,6 +15,12 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 'latest',
   },
+  overrides: [
+    {
+      files: '*.mdx',
+      parser: 'eslint-mdx',
+    },
+  ],
   rules: {
     indent: ['error', 2],
     'linebreak-style': ['error', 'unix'],
