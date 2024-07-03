@@ -1,0 +1,25 @@
+# Home server
+
+<GithubLink link="https://github.com/source-academy/java-slang" />
+
+"Save" on hosting costs with this one simple trick!
+
+## Use case
+
+Self hosted services may be ideal for a few reasons:
+
+1. Privacy: some services may deal with sensitive data, such as financial information.
+2. Cost: at 32.57 cents/kWh, a pi 5 8GB (idle @ 3W) costs between 2 to 4 SGD per month to run. A digital ocean droplet costs 4 (USD?) a month for 512MB of RAM.
+3. Fun: why not.
+
+## Network overview
+
+1. Cloudfare proxy DNS: free DNS with a proxy that hides server ip. Also the cheapest registrar.
+2. Gmail SMTP: free email service.
+3. ddclient: updates the DNS record with the server's public IP.
+4. Nginx: reverse proxy for services.
+5. Authentik: SSO authentication.
+
+## Services
+
+TODO:
