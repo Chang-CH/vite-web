@@ -19,6 +19,11 @@ module.exports = {
     {
       files: '*.mdx',
       parser: 'eslint-mdx',
+      extends: ['plugin:mdx/recommended', 'plugin:mdx/overrides'],
+      rules: {
+        indent: 'off',
+        semi: 'off',
+      },
     },
   ],
   rules: {

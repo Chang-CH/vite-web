@@ -31,12 +31,12 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: '/projects/:article',
+    path: '/projects/:project',
     element: <MarkdownArticle />,
     loader: ({ params }) => {
       return Promise.all([
-        import(`@markdown/projects/${params.article}/index.mdx`),
-        import(`@markdown/projects/${params.article}/components.ts`).catch(
+        import(`@markdown/projects/${params.project}/index.mdx`),
+        import(`@markdown/projects/${params.project}/components.ts`).catch(
           () => ({})
         ),
       ]).then(res => {

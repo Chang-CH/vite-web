@@ -1,5 +1,6 @@
 import CodeBlock from '../CodeBlock';
-import InternalLink from '../InternalLink';
+import GithubLink from '../Links/GithubLink';
+import InternalLink from '../Links/InternalLink';
 import SideGrid from '../SideGrid';
 import styles from './s.module.scss';
 import { useLoaderData } from 'react-router-dom';
@@ -13,6 +14,7 @@ function MarkdownArticle() {
         components={{
           code: CodeBlock,
           InternalLink,
+          GithubLink,
           SideGrid,
           ...CustomComponents,
         }}
