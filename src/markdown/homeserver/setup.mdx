@@ -1,3 +1,25 @@
-# Installing OS
+# Home server full setup
 
-- install ubuntu (download iso, flash to flash drive with balena etcher)
+## Services overview
+
+1. Cloudfare proxy
+    1. Hides your server's public IP address. Clients connect to Cloudfare proxy, proxy sends request to next layer.
+    2. HTTPS termination (optional). Cloudfare can terminate HTTPS connections and send unencrypted traffic to your server.
+    3. Bot mitigation + Firewall. Cloudfare can block malicious traffic before it reaches your server. You can also set custom firewall rules (e.g. Captcha challenge all non Singaporean visitors).
+    4. DNS/DDNS. Resolves your domain name to your server's IP address. Since cloudfare provides an api to update DNS, we can run a cronjob to update DNS if we do not have a static IP.
+2. OPNsense + ProxMox
+    1. OPNsense is a firewall/router that sits between your server and the internet. It can monitor and block incoming/outgoing traffic.
+    2. ProxMox is a hypervisor that runs OPNsense and your server. Running OPNsense on a VM separates the firewall from the server, isolating compromised services from the firewall in the event of an attack.
+3. Nginx
+    1. Reverse proxy. Nginx listens on port 80/443 and forwards requests to the appropriate service.
+    2. Load balancer. Nginx can distribute incoming requests to multiple servers.
+    3. Rate limiting. Nginx can limit the number of requests a client can make in a given time period.
+    4. HTTPS termination. Nginx can terminate HTTPS connections and send unencrypted traffic to your server.
+4. Docker
+    1. Containerization. Docker isolates services from each other, preventing one service from affecting another.
+    2. Portability. Docker containers can be easily moved between servers.
+    3. Resource management. Docker can limit the amount of CPU/memory a container can use.
+    4. Your services will all be running in their own containers.
+
+## Cloudfare
+
