@@ -11,8 +11,25 @@ function Projects() {
         rel="noopener noreferrer"
       >
         <TurboCard>
-          <h2>Yacht</h2>
-          <p>Docker container monitoring</p>
+          <h2>Home server</h2>
+          <p>
+            An old laptop serving as a home server, running a variety of docker
+            compose services.
+          </p>
+        </TurboCard>
+        <TurboCard>
+          <h2>Java-slang</h2>
+          <p>
+            An implementation of the Java Virtual Machine, written in
+            typescript.
+          </p>
+        </TurboCard>
+        <TurboCard>
+          <h2>UBS Coding challenge</h2>
+          <p>
+            UBS Coding challenge setup for team ColonWQ (2nd Runner Up), using a
+            NodeJS server and a Flask server.
+          </p>
         </TurboCard>
       </a>
       <BgDots />

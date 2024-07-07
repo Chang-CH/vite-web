@@ -52,7 +52,7 @@ class Example {
     }
 }
 
-````
+```
 
 </SideGrid>
 
@@ -63,25 +63,30 @@ public class Example {
     public static int count = 1;
 
     public static synchronized void stIncrement() {
-        for (int i = 0; i < 10; i++) {
-            this.count = this.count + 1;
+        for (int i = 0; i < 5; i++) {
+            Example.count = Example.count + 1;
+            System.out.println("Thread # " + Thread.currentThread().getId() + ": " + Example.count);
         }
     }
 
     public static synchronized void stDouble() {
-        for (int i = 0; i < 10; i++) {
-            this.count = this.count * 2;
+        for (int i = 0; i < 5; i++) {
+            Example.count = Example.count * 2;
+            System.out.println("Thread # " + Thread.currentThread().getId() + ": " + Example.count);
         }
     }
 }
 
-public class Thread1 extends Runnable {
+
+class Thread1 implements Runnable {
+    @Override
     public void run() {
         Example.stIncrement();
     }
 }
 
-public class Thread2 extends Runnable {
+class Thread2 implements Runnable {
+    @Override
     public void run() {
         Example.stDouble();
     }
@@ -93,14 +98,33 @@ public class Main {
         Thread t2 = new Thread(new Thread2());
         t1.start();
         t2.start();
-        t1.join();
-        t2.join();
+        try {
+            t1.join();
+            t2.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         System.out.println(Example.count);
     }
 }
 ```
 
-This might not be the desired behaviour, as we might only want to synchronize on the method, and not the class object. To achieve this, we can use a `synchronized` block:
+output:
+
+```
+Thread # 1: 2
+Thread # 1: 3
+Thread # 1: 4
+Thread # 1: 5
+Thread # 1: 6
+Thread # 2: 12
+Thread # 2: 24
+Thread # 2: 48
+Thread # 2: 96
+Thread # 2: 192
+```
+
+Notice how `stDouble` has to wait to acquire the monitor Thread 1 has entered before it can start. This might not be the desired behaviour, as we might only want to synchronize on the method, and not the class object. To achieve this, we can use a `synchronized` block:
 
 ```java
 public class Example {
@@ -110,20 +134,35 @@ public class Example {
 
     public static void stIncrement() {
         synchronized (incLock) {
-            for (int i = 0; i < 10; i++) {
-                this.count = this.count + 1;
+            for (int i = 0; i < 5; i++) {
+                Example.count = Example.count + 1;
+                System.out.println("Thread # " + Thread.currentThread().getId() + ": " + Example.count);
             }
         }
     }
 
-    public static synchronized void stDouble() {
+    public static void stDouble() {
         synchronized (doubleLock) {
-            for (int i = 0; i < 10; i++) {
-                this.count = this.count * 2;
+            for (int i = 0; i < 5; i++) {
+                Example.count = Example.count * 2;
+                System.out.println("Thread # " + Thread.currentThread().getId() + ": " + Example.count);
             }
         }
     }
 }
+```
+
+```
+Thread # 30: 4
+Thread # 29: 4
+Thread # 29: 8
+Thread # 30: 8
+Thread # 30: 16
+Thread # 29: 16
+Thread # 30: 34
+Thread # 29: 34
+Thread # 30: 68
+Thread # 29: 68
 ```
 
 Now, the two methods will not block each other, as they are synchronized on different objects.
