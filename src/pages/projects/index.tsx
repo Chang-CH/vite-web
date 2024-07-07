@@ -25,10 +25,11 @@ function Projects() {
           </p>
         </TurboCard>
         <TurboCard>
-          <h2>UBS Coding challenge</h2>
+          <h2>Hireside</h2>
           <p>
-            UBS Coding challenge setup for team ColonWQ (2nd Runner Up), using a
-            NodeJS server and a Flask server.
+            Submission for the Venture Initiation Program at NUS. A platform
+            that provides instant price estimates for contract services using
+            historical data.
           </p>
         </TurboCard>
       </a>
