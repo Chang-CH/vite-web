@@ -5,14 +5,22 @@ import BgDots from '@components/backgrounds/BgDots';
 function Selfhosted() {
   return (
     <div className={styles.rootContainer}>
-      <a
-        href="http://dreadnought-ubuntu:8000"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+      <a href="http://WIP:8000" target="_blank" rel="noopener noreferrer">
         <TurboCard>
-          <h2>Yacht</h2>
-          <p>Docker container monitoring</p>
+          <h2>About</h2>
+          <p>How, why, and everything else.</p>
+        </TurboCard>
+      </a>
+      <a href="http://WIP:8000" target="_blank" rel="noopener noreferrer">
+        <TurboCard>
+          <h2>Setup</h2>
+          <p>Getting the machine up and running</p>
+        </TurboCard>
+      </a>
+      <a href="http://WIP:8000" target="_blank" rel="noopener noreferrer">
+        <TurboCard>
+          <h2>Services setup</h2>
+          <p>Setup guides for individual services</p>
         </TurboCard>
       </a>
       <BgDots />
