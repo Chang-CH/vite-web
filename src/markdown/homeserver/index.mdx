@@ -1,26 +1,40 @@
-# Homeserver dev logs
+# Home server
 
-### Connecting to machine on local network
+<GithubLink link="https://github.com/source-academy/java-slang" />
 
-1. determine machine's ip (usually `192.168.1.XX`)
-   1. windows: `ipconfig`, see IPv4 addr of adapter
-   2. linux: `ifconfig` (or `ip -d address`), see `wlo1` inet
-2. run express app, e.g. on port 5000
-3. on second machine, use postman, `GET 192.168.1.XX:5000/endpoint`.
+"Save" on hosting costs with this one simple trick!
 
-### Getting IP of machine with known hostname
+## Network overview
 
-1. check hostname of remote: `hostname` (configure with `sudo hostnamectl set-hostname ...`)
-2. on client: `ping $HOSTNAME -4`, returns ping details
+1. Cloudfare proxy DNS: free DNS with a proxy that hides server ip. Domain name registrar.
+2. Gmail SMTP: free smtp server for sending emails.
+3. ddclient: updates the DNS record with the server's public IP.
+4. Nginx: reverse proxy for services.
+5. Authentik: SSO authentication.
 
-```sh
-@echo off
- title Display your IP and hostname
- color F9
- @echo -
- for /f "tokens=2 delims=:" %%i in ('ipconfig^|findstr "Address"') do set ip=%%i
- @echo Your ip address is :%ip%
- @echo Your computer name is :%COMPUTERNAME%
-Echo press any key to exit...
-pause>NUL
-```
+## Services
+
+1. Docker media center
+   1. SABnzbd: usenet downloader
+   2. Transmission: torrent downloader
+   3. Sonarr: TV show downloader
+   4. Radarr: movie downloader
+   5. Prowlarr: indexer
+   6. Jellyfin: media server
+   7. Jellyseerr: media discovery and request management
+2. Firefly 3: personal finance manager
+3. Authentik: SSO authentication
+4. Yacht: container management dashboard
+5. N8N: Automation + bot integration
+
+## Other services
+
+Other interesting FOSS services to self host can be found at the below links:
+
+1. [Awesome selfhosted](https://github.com/awesome-selfhosted/awesome-selfhosted): list of free network services that can be self hosted.
+2. [Reddit selfhosted](https://www.reddit.com/r/selfhosted/): Reddit community for self hosted applications.
+3. [Reddit homeserver](https://www.reddit.com/r/homeserver/): Reddit community for homeserver setups.
+
+## Setup
+
+For setup guide, refer to the <InternalLink to="./setup">full setup guide</InternalLink>.

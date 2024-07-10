@@ -23,3 +23,25 @@
 
 ## Cloudfare
 
+1. [Optional] Transferring domain to Cloudfare
+    1. Transfer DNS records to Cloudfare. Clicking add domain in cloudfare should automatically import (most) of your DNS records. At the last step, 2 urls should be shown. Keep these for step 2.
+    2. On your existing domain registrar, change the nameservers to custom and paste Cloudfare's nameservers (the 2 links provided at the step above).
+    3. Obtain the auth code for domain transfer. In cloudfare, search for domain transfer and enter the auth code.
+    4. An email will be sent to your namecheap account email. Use this to expedite the transfer.
+2. Setting up DNS
+    1. Add a new `A` record with your server's public IP address. You can use [https://whatismyipaddress.com/](https://whatismyipaddress.com/) to find your public IP. If you wish to deploy on root domain, set name as `domain.com`. Otherwise, set name as your subdomain, e.g. `api` for `api.domain.com`.
+    2. [Optional] for multiple subdomains routed to the same IP, consider setting up an `A` record with the main subdomain (e.g. `home`). For other subdomains, create `CNAME` records, but instead of setting the ip, set host as `home.domain.com`.
+    3. [Optional] turn on cloudfare proxy. This means that when a client accesses your server, the request goes through cloudfare first. This hides your server's public IP address.
+3. Set up SSL. Select one of the below options:
+    1. Flexible: SSL terminates at the cloudfare proxy. unencrypted HTTP is sent to your server.
+    2. Full: enables end to end encryption. Use this if your server does not generate publicly trusted certs.
+    3. Full (strict): enables end to end encryption. Use this if your server generates publicly trusted certs. Since Nginx Proxy Manager supports automatically generating lets encrypt certs, this should be the best option.
+5. Set up Web Application Firewall (WAF): Go to the firewall tab and enable WAF. Suggested rules include:
+    1. Block known bots on subdomains. (Known Bots && URI Path contains \*.domain.com)
+    2. JS Challenge non whitelisted request origin countries. (e.g. Country is not Singapore && URI Path contains \*.domain.com)
+
+## Docker services
+
+Most of the services used are installed as docker containers. Install [docker](https://docs.docker.com/engine/install/ubuntu/) and 
+follow the guides below to set up each service.
+
