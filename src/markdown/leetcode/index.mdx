@@ -1,0 +1,32 @@
+# Leetcode flowchart
+
+## Known constraints
+
+A sort of hacky way to narrow down your solutions based on the magnitude of the input. Only applicable for online tests, 
+interviews rarely provide concrete constraints. Try not to rely on this too much.
+
+
+There are a few breakpoints to remember:
+
+1. 10^4: O(n^2) is the maximum complexity you can afford.
+2. 10^5: O(n log n) is the maximum complexity you can afford.
+3. 10^6: O(n) is the maximum complexity you can afford.
+
+## n^2 solutions
+
+Probably the biggest category of solutions. Do heavily consider DP/ recursion.
+
+1. Brute force: Try all possible combinations.
+2. DP: Given the solution to a subproblem k(n-1), can you find k(n)?
+
+## n log n solutions
+
+1. Is rearrangement allowed? If yes, consider sorting + another nlogn or n solution.
+2. If no, is the solution strictly increasing? i.e. if optimal answer is k, are k+1 ... valid solutions? Given the answer, can you verify the solution in O(nlogn) time? If yes, consider binary search.
+3. Binary search n times
+4. Quick select: partition and recurse.
+
+## n solutions
+
+1. sliding window: is the answer related to finding a contiguous subarray? If so consider 2 pointer sliding window
+2. greedy: ignoring all else, can we be sure that taking the best local solution will lead to the best global solution?
