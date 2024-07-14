@@ -11,10 +11,10 @@ type PageProps = {
 };
 
 const BgDots = ({
-  dotColour,
-  bgColour,
-  dotRadius,
-  dotSpacing,
+  dotColour = '#333',
+  bgColour = '#111',
+  dotRadius = '2px',
+  dotSpacing = '40px',
   style,
   className,
   ...otherProps
