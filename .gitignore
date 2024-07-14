@@ -131,3 +131,5 @@ dist
 
 !vite-env.d.ts
 *.d.ts
+
+*storybook.log

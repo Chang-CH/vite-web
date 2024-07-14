@@ -9,7 +9,7 @@ function App() {
       <div className={styles.splashContainer}>
         <div className={styles.splashText}>
           <div>
-            <h1 className="text-8xl">CH</h1>
+            <h1 className="text-8xl">Chuan</h1>
             <h2>Web + Mobile Frontend | OKX</h2>
             <div className={styles.divSocials}>
               <a
@@ -30,7 +30,7 @@ function App() {
                 <p className={styles.textLink}>projects</p>
               </Link>
               <Link to="/selfhosted">
-                <p className={styles.textLink}>selfhosted</p>
+                <p className={styles.textLink}>self-hosted</p>
               </Link>
             </div>
           </div>

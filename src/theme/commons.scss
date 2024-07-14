@@ -1,3 +1,51 @@
 $primary: #f5165d;
 $secondary: #3086e9;
+$accent: orange;
+
+$text: #fff;
 $background: #13011e;
+
+@mixin headline_1_bold {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: 'inherit';
+}
+
+strong,
+b {
+  font-weight: 700;
+}
+
+body {
+  margin: 0;
+
+  &::backdrop {
+    background-color: $background;
+  }
+}
+
+a {
+  color: $text;
+  border-bottom: 2px solid transparent;
+}
+
+a:hover {
+  color: $accent;
+}
+
+a:visited {
+  color: $text;
+}
+
+div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+// TODO:: create constants for font sizes etc.

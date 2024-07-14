@@ -6,12 +6,7 @@ module.exports = {
   },
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'unused-imports'],
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/eslint-recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:mdx/recommended',
-  ],
+  extends: ['eslint:recommended', 'plugin:@typescript-eslint/eslint-recommended', 'plugin:@typescript-eslint/recommended', 'plugin:mdx/recommended', 'plugin:storybook/recommended'],
   parserOptions: {
     ecmaVersion: 'latest',
   },
