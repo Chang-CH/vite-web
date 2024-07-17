@@ -34,12 +34,12 @@ a {
   border-bottom: 2px solid transparent;
 }
 
-a:hover {
-  color: $accent;
+a:visited {
+  color: inherit;
 }
 
-a:visited {
-  color: $text;
+a:hover {
+  color: $primary;
 }
 
 div {

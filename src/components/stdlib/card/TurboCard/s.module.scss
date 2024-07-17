@@ -17,6 +17,8 @@ $border-width: 2px;
   overflow: hidden;
   z-index: 0;
   border-radius: $component-radius;
+  width: inherit;
+  height: inherit;
 }
 
 .container:hover {
@@ -35,6 +37,7 @@ $border-width: 2px;
   // background-color: #000;
   background-image: radial-gradient(circle at 50% 20px, #290712, #000);
   padding: 10px;
+  height: inherit;
 }
 
 .divContent:hover {
