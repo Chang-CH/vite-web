@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 function App() {
   return (
-    <div className={styles.rootContainer}>
+    <BgBlob className={styles.rootContainer}>
       <div className={styles.splashContainer}>
         <div className={styles.splashText}>
           <div>
@@ -36,8 +36,7 @@ function App() {
           </div>
         </div>
       </div>
-      <BgBlob />
-    </div>
+    </BgBlob>
   );
 }
 

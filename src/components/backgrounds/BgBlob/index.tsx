@@ -1,11 +1,17 @@
-'use client';
-
 import { useCallback, useEffect, useRef } from 'react';
-import styles from './styles.module.css';
+import styles from './s.module.scss';
 import { throttle } from 'lodash';
 
 // isolate the client component so children of background do not need to be client component
-const BgBlob = () => {
+const BgBlob = ({
+  className,
+  children,
+  ...props
+}: {
+  className?: string;
+  children?: React.ReactElement;
+  [key: string]: any;
+}) => {
   const blobRef = useRef<HTMLDivElement>(null);
   const moveBlob = useCallback(
     throttle((e: MouseEvent) => {
@@ -27,8 +33,16 @@ const BgBlob = () => {
     document.onmousemove = moveBlob;
   });
 
+  console.log();
+
   return (
-    <div className={styles.divContainer}>
+    <div
+      className={
+        className ? className + ' ' + styles.divContainer : styles.divContainer
+      }
+      {...props}
+    >
+      {children}
       <div className={styles.divBlur} />
       <div className={styles.divBlob} ref={blobRef} />
     </div>

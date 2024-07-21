@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import Home from './pages/home';
-import './index.css';
+import '@theme/_global.scss';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import StackSpinner from '@components/stdlib/loader/StackSpinner';
 import MarkdownArticle from '@components/markdown/MarkdownPage';

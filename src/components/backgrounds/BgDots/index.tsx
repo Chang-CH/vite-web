@@ -5,11 +5,13 @@ type PageProps = {
   dotSpacing?: string;
   style?: React.CSSProperties;
   className?: string;
+  children?: React.ReactNode;
   otherProps?: {
-    [key: string]: string;
+    [key: string]: any;
   };
 };
 
+// Maybe we can set default classname, then inject styles if changed
 const BgDots = ({
   dotColour = '#333',
   bgColour = '#111',
@@ -17,6 +19,7 @@ const BgDots = ({
   dotSpacing = '40px',
   style,
   className,
+  children,
   ...otherProps
 }: PageProps) => {
   return (
@@ -28,15 +31,11 @@ const BgDots = ({
           dotColour ?? ''
         }  ${dotRadius ?? '1px'}, ${bgColour ?? ''} 0)`,
         backgroundSize: `${dotSpacing ?? '40px'} ${dotSpacing ?? '40px'}`,
-        width: '100%',
-        height: '100%',
-        position: 'absolute',
-        zIndex: -999,
-        top: 0,
-        left: 0,
         ...style,
       }}
-    />
+    >
+      {children}
+    </div>
   );
 };
 

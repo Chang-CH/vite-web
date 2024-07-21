@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 
 function Projects() {
   return (
-    <div className={styles.rootContainer}>
+    <BgDots className={styles.rootContainer}>
       <h1>Projects</h1>
       <div className={styles.cardContainer}>
         <Link to="/selfhosted" className={styles.cardLink}>
@@ -14,8 +14,9 @@ function Projects() {
             <p>An old laptop with port forwarded docker services.</p>
           </TurboCard>
         </Link>
-        <a
-          href="https://github.com/source-academy/java-slang"
+        <Link
+          to={{ pathname: 'https://github.com/source-academy/java-slang' }}
+          target="_blank"
           className={styles.cardLink}
         >
           <TurboCard className={styles.cardProject}>
@@ -25,8 +26,13 @@ function Projects() {
               typescript.
             </p>
           </TurboCard>
-        </a>
-        <a href="hireside.co" className={styles.cardLink}>
+        </Link>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="https://hireside.co"
+          className={styles.cardLink}
+        >
           <TurboCard className={styles.cardProject}>
             <h2>Hireside</h2>
             <p>
@@ -35,8 +41,7 @@ function Projects() {
           </TurboCard>
         </a>
       </div>
-      <BgDots />
-    </div>
+    </BgDots>
   );
 }
 

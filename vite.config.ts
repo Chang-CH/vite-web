@@ -13,6 +13,13 @@ export default defineConfig({
       exclude: './src/stories/**/*.mdx',
     }),
   ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: '@use "@theme/commons.scss" as *;',
+      },
+    },
+  },
   resolve: {
     alias: {
       '@components': path.resolve(__dirname, './src/components'),

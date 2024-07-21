@@ -10,42 +10,4 @@ $background: #13011e;
   font-weight: 700;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: 'inherit';
-}
-
-strong,
-b {
-  font-weight: 700;
-}
-
-body {
-  margin: 0;
-
-  &::backdrop {
-    background-color: $background;
-  }
-}
-
-a {
-  color: $text;
-  border-bottom: 2px solid transparent;
-}
-
-a:visited {
-  color: inherit;
-}
-
-a:hover {
-  color: $primary;
-}
-
-div {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
 // TODO:: create constants for font sizes etc.

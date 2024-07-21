@@ -4,7 +4,7 @@ import BgDots from '@components/backgrounds/BgDots';
 
 function Selfhosted() {
   return (
-    <div className={styles.rootContainer}>
+    <BgDots className={styles.rootContainer}>
       <a href="http://WIP:8000" target="_blank" rel="noopener noreferrer">
         <TurboCard>
           <h2>About</h2>
@@ -23,8 +23,7 @@ function Selfhosted() {
           <p>Setup guides for individual services</p>
         </TurboCard>
       </a>
-      <BgDots />
-    </div>
+    </BgDots>
   );
 }
 
