@@ -23,6 +23,23 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: '/selfhosted/:article',
+    element: <MarkdownArticle />,
+    loader: ({ params }) => {
+      return Promise.all([
+        import(`@markdown/selfhosted/${params.article}/index.mdx`),
+        import(`@markdown/selfhosted/${params.article}/components.ts`).catch(
+          () => ({})
+        ),
+      ]).then(res => {
+        return {
+          MDXContent: res[0].default,
+          CustomComponents: res[1].default,
+        };
+      });
+    },
+  },
+  {
     path: '/projects',
     element: (
       <Suspense fallback={<StackSpinner />}>

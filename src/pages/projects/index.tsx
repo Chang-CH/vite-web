@@ -14,9 +14,10 @@ function Projects() {
             <p>An old laptop with port forwarded docker services.</p>
           </TurboCard>
         </Link>
-        <Link
-          to={{ pathname: 'https://github.com/source-academy/java-slang' }}
+        <a
           target="_blank"
+          rel="noopener noreferrer"
+          href="https://github.com/source-academy/java-slang"
           className={styles.cardLink}
         >
           <TurboCard className={styles.cardProject}>
@@ -26,7 +27,7 @@ function Projects() {
               typescript.
             </p>
           </TurboCard>
-        </Link>
+        </a>
         <a
           target="_blank"
           rel="noopener noreferrer"
