@@ -5,6 +5,7 @@ import '@theme/_global.scss';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import StackSpinner from '@components/stdlib/loader/StackSpinner';
 import MarkdownArticle from '@components/markdown/MarkdownPage';
+import CleanBlog from './layouts/CleanBlog';
 
 const SelfHosted = React.lazy(() => import('@pages/selfhosted'));
 const Projects = React.lazy(() => import('@pages/projects'));
@@ -24,7 +25,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/selfhosted/:article',
-    element: <MarkdownArticle />,
+    element: <MarkdownArticle Layout={CleanBlog} />,
     loader: ({ params }) => {
       return Promise.all([
         import(`@markdown/selfhosted/${params.article}/index.mdx`),
@@ -49,7 +50,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/projects/:project',
-    element: <MarkdownArticle />,
+    element: <MarkdownArticle Layout={CleanBlog} />,
     loader: ({ params }) => {
       return Promise.all([
         import(`@markdown/projects/${params.project}/index.mdx`),
@@ -66,7 +67,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/projects/:projectName/:article',
-    element: <MarkdownArticle />,
+    element: <MarkdownArticle Layout={CleanBlog} />,
     loader: ({ params }) => {
       return Promise.all([
         import(
