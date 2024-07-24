@@ -4,13 +4,15 @@
 
 "Save" on hosting costs with this one simple trick!
 
-## Network overview
+## How it works
 
-1. Cloudfare proxy DNS: free DNS with a proxy that hides server ip. Domain name registrar.
-2. Gmail SMTP: free smtp server for sending emails.
-3. ddclient: updates the DNS record with the server's public IP.
-4. Nginx: reverse proxy for services.
+Say we are accessing `jellyfin.domain.com`. The request goes through the below layers:
+
+1. Cloudfare proxy DNS: resolves the domain to an IP. If we enable cloudfare proxy, this IP is not actually the IP of the server, but cloudfare's proxy IP, a reverse proxy. Also a firewall.
+2. Proxmox + OPNsense: firewall/router that sits between the server and the internet. It can monitor and block incoming/outgoing traffic.
+4. Nginx: Reverse proxy. Multiple domains can be hosted, and we only need to expose port 443. Nginx then proxies the request to the appropriate port/service.
 5. Authentik: SSO authentication.
+6. Jellyfin: The actual service we wish to access, living in a docker container.
 
 ## Services
 
