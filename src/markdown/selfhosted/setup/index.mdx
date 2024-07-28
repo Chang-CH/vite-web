@@ -45,10 +45,10 @@
 
 1. Find the admin IP of your router. for singtel routers, this is usually `192.168.1.254`.
 2. Find the port forwarding tab. It should look something like this:
-![port forwarding](portforward.png)
+![port forwarding](/markdown/selfhosted/setup/portforward.png)
 3. Port forward ports 80 (HTTP) and 443 (HTTPS) to your server's local IP address. You can obtain your ip using `ipconfig` on windows or `ifconfig` on linux. You might also be able to find it in the firewall/DMZ page of your router admin console.
 4. Setup DHCP reserved: Since our port forward is configured with our local private ip, we need to ensure DHCP does not assign a new random ip to our server if we restart. Under `Home Network Configuration`, click on settings and scroll down until you reach the `Manual devices Reserve` section:
-![dhcp reserve](dhcpreserve.png)
+![dhcp reserve](/markdown/selfhosted/setup/dhcpreserve.png)
 
 ## Docker services
 
