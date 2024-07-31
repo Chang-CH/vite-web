@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import styles from './s.module.css';
 
 export interface TimelineData {
@@ -16,12 +15,10 @@ const Timeline = ({ data }: { data: TimelineData[] }) => {
           <>
             <div className={styles.card} key={index}>
               {entry.preview ? (
-                <Image
+                <img
                   className={styles.image}
                   src={entry.preview}
                   alt={entry.title}
-                  width={200}
-                  height={200}
                 />
               ) : null}
               <div className={styles.cardBody}>

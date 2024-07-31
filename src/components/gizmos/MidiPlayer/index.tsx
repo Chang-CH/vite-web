@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { FaVolumeMute } from 'react-icons/fa';
 import { pieceMarbleMachine } from './constants';
 import { keyMap } from './sounds/sounds';

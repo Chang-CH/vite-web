@@ -101,7 +101,7 @@ export const convertPath = (
 export const convertData = (
   width: number,
   height: number,
-  data: {
+  _data: {
     start: number;
     end: number;
     offset: number;
