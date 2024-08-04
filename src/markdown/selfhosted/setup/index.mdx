@@ -55,3 +55,17 @@
 Most of the services used are installed as docker containers. Install [docker](https://docs.docker.com/engine/install/ubuntu/) and 
 follow the guides below to set up each service.
 
+## Always online
+
+Sometimes, even when our services are offline, we may still want to be able to access pages, albeit in a serverly limited manner.
+For example, it might be nice to still be able to load the services directory, even if all the links to the services are disabled.
+
+To accomplish this, we have 2 methods:
+1. Cloudfare always online: pairs with Internet archive to cache and use the last known good version of the site.
+2. Cloudfare custom pages: create a custom page for `523` on our domains and deploy a custom offline home page.
+3. Cloudfare workers: have a worker intercept `523` errors and serve a custom page.
+
+The current setup for this site uses method 3, so we will explain that in further detail.
+
+{/* TODO: */}
+
