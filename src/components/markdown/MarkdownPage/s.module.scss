@@ -113,3 +113,39 @@
   font-size: 1.25rem /* 20px */;
   line-height: 1.75rem /* 28px */;
 }
+
+.h1 {
+  background: linear-gradient(
+    90deg,
+    $primary,
+    $primary,
+    $secondary,
+    $secondary
+  );
+  background-clip: text;
+  color: transparent;
+  background-size: 200% 200%;
+  animation: text-gradient 3s infinite;
+}
+
+@keyframes text-gradient {
+  from {
+    background-position: 10% 0%;
+  }
+
+  30% {
+    background-position: 90% 100%;
+  }
+
+  to {
+    background-position: 10% 0%;
+  }
+}
+
+.code {
+  background: #00000022;
+  border-radius: 0.3rem;
+  color: $accent;
+  padding: 0.2rem;
+  font-size: 0.9rem;
+}

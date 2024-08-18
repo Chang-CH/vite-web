@@ -6,7 +6,13 @@ module.exports = {
   },
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'unused-imports'],
-  extends: ['eslint:recommended', 'plugin:@typescript-eslint/eslint-recommended', 'plugin:@typescript-eslint/recommended', 'plugin:mdx/recommended', 'plugin:storybook/recommended'],
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:mdx/recommended',
+    'plugin:storybook/recommended',
+  ],
   parserOptions: {
     ecmaVersion: 'latest',
   },
@@ -22,7 +28,7 @@ module.exports = {
     },
   ],
   rules: {
-    indent: ['error', 2],
+    indent: ['error', 2, { SwitchCase: 1 }],
     'linebreak-style': ['error', 'unix'],
     quotes: ['error', 'single'],
     semi: ['error', 'always'],

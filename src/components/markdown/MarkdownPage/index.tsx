@@ -19,11 +19,13 @@ function MarkdownArticle({
       <Layout>
         <MDXContent
           components={{
-            code: CodeBlock,
+            pre: CodeBlock,
             InternalLink,
             GithubLink,
             SideGrid,
             img: MarkdownImage,
+            h1: (props: any) => <h1 {...props} className={styles.h1} />,
+            code: (props: any) => <code {...props} className={styles.code} />,
             ...CustomComponents,
           }}
         />
@@ -34,7 +36,7 @@ function MarkdownArticle({
     <div className={styles.rootContainer}>
       <MDXContent
         components={{
-          code: CodeBlock,
+          pre: CodeBlock,
           InternalLink,
           GithubLink,
           SideGrid,
