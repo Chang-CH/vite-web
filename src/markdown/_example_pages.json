@@ -7,8 +7,10 @@
       "description": "This is an example page description.",
       "id": 0,
       "isMdx": true,
+      "isFolder": true,
       "createdAt": 0,
-      "modifiedAt": 0
+      "modifiedAt": 0,
+      "route": "page"
     }
   ],
   "hasMorePages": false
