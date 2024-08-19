@@ -13,19 +13,18 @@ function MarkdownArticle({
   path?: string;
 }) {
   const { MDXContent, CustomComponents } = useLoaderData() as any;
-
   if (Layout) {
     return (
       <Layout>
         <MDXContent
           components={{
-            pre: CodeBlock,
+            pre: (props: any) => <code {...props} className={styles.code} />,
             InternalLink,
             GithubLink,
             SideGrid,
             img: MarkdownImage,
             h1: (props: any) => <h1 {...props} className={styles.h1} />,
-            code: (props: any) => <code {...props} className={styles.code} />,
+            code: CodeBlock,
             ...CustomComponents,
           }}
         />
@@ -36,11 +35,13 @@ function MarkdownArticle({
     <div className={styles.rootContainer}>
       <MDXContent
         components={{
-          pre: CodeBlock,
+          pre: (props: any) => <code {...props} className={styles.code} />,
           InternalLink,
           GithubLink,
           SideGrid,
           img: MarkdownImage,
+          h1: (props: any) => <h1 {...props} className={styles.h1} />,
+          code: CodeBlock,
           ...CustomComponents,
         }}
       />
