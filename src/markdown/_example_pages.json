@@ -1,0 +1,15 @@
+{
+  "directoryTitle": "Example Directory",
+  "directoryDescription": "This is an example directory description.",
+  "pages": [
+    {
+      "title": "This will be populated by the build script",
+      "description": "This is an example page description.",
+      "id": 0,
+      "isMdx": true,
+      "createdAt": 0,
+      "modifiedAt": 0
+    }
+  ],
+  "hasMorePages": false
+}
