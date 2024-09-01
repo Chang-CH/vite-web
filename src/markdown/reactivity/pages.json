@@ -1,0 +1,33 @@
+{
+  "directoryTitle": "Reactivity",
+  "directoryDescription": "",
+  "pages": [
+    {
+      "title": "React Fiber",
+      "id": 0,
+      "isMdx": true,
+      "isFolder": false,
+      "createdAt": 1720950927,
+      "modifiedAt": 1720950927,
+      "route": "reactFiber.mdx"
+    },
+    {
+      "title": "Reactivity",
+      "id": 1,
+      "isMdx": true,
+      "isFolder": false,
+      "createdAt": 1720950927,
+      "modifiedAt": 1720950927,
+      "route": "reactivity.mdx"
+    },
+    {
+      "title": "React Memoization",
+      "id": 2,
+      "isMdx": true,
+      "isFolder": false,
+      "createdAt": 1720950927,
+      "modifiedAt": 1720950927,
+      "route": "reactMemoization.mdx"
+    }
+  ]
+}

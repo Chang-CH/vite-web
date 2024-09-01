@@ -1,0 +1,37 @@
+@import '@theme/commons.scss';
+
+$cardWidth: 20rem;
+$cardSpacing: 0.5rem;
+
+.rootContainer {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  flex-grow: 1;
+  min-width: 100vw;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background-color: $background;
+  z-index: 0;
+}
+
+.cardProject {
+  width: $cardWidth;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+}
+
+.cardLink {
+  height: 100%;
+}
+
+.cardContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: $cardWidth * 3 + $cardSpacing * 2;
+  height: 20rem;
+  flex-wrap: wrap;
+}

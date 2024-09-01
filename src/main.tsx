@@ -9,6 +9,9 @@ import CleanBlog from './layouts/CleanBlog';
 
 const SelfHosted = React.lazy(() => import('@pages/selfhosted'));
 const Projects = React.lazy(() => import('@pages/projects'));
+const ExpSubModule = React.lazy(
+  () => import('@pages/experimental/mdx-submodule')
+);
 
 const router = createBrowserRouter([
   {
@@ -98,6 +101,14 @@ const router = createBrowserRouter([
         };
       });
     },
+  },
+  {
+    path: '/experimental/mdx-submodule',
+    element: (
+      <Suspense fallback={<StackSpinner />}>
+        <ExpSubModule />
+      </Suspense>
+    ),
   },
 ]);
 

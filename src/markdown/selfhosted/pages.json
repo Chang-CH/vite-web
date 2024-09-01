@@ -1,0 +1,24 @@
+{
+  "directoryTitle": "Selfhosted",
+  "directoryDescription": "",
+  "pages": [
+    {
+      "title": "About",
+      "id": 0,
+      "isMdx": true,
+      "isFolder": true,
+      "createdAt": 1721562901,
+      "modifiedAt": 1721835319,
+      "route": "about/index.mdx"
+    },
+    {
+      "title": "Setup",
+      "id": 1,
+      "isMdx": true,
+      "isFolder": true,
+      "createdAt": 1721562901,
+      "modifiedAt": 1722785366,
+      "route": "setup/index.mdx"
+    }
+  ]
+}
