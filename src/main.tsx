@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import StackSpinner from '@components/stdlib/loader/StackSpinner';
 import MarkdownArticle from '@components/markdown/MarkdownPage';
 import CleanBlog from './layouts/CleanBlog';
+import TestDirectory from '@pages/experimental/mdx-directory';
 
 const SelfHosted = React.lazy(() => import('@pages/selfhosted'));
 const Projects = React.lazy(() => import('@pages/projects'));
@@ -107,6 +108,14 @@ const router = createBrowserRouter([
     element: (
       <Suspense fallback={<StackSpinner />}>
         <ExpSubModule />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/experimental/mdx-directory',
+    element: (
+      <Suspense fallback={<StackSpinner />}>
+        <TestDirectory />
       </Suspense>
     ),
   },
