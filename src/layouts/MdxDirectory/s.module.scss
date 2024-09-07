@@ -21,4 +21,34 @@
 .background {
   width: 100%;
   height: 100%;
+  flex: 1;
+  padding-block: 5rem;
+}
+
+.card {
+  width: 600px !important;
+  height: 400px !important;
+  overflow: clip;
+}
+
+.cardBanner {
+  height: 50%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.cardContent {
+  height: 50%;
+  width: 100%;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.highlightsDiv {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }

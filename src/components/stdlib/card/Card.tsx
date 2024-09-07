@@ -6,6 +6,12 @@ export enum CardVariant {
   TURBO,
 }
 
+export enum CardSize {
+  SMALL,
+  MEDIUM,
+  LARGE,
+}
+
 export default function Card({
   variant,
   ...props

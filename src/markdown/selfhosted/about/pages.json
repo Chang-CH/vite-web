@@ -3,13 +3,17 @@
   "directoryDescription": "",
   "pages": [
     {
-      "title": "Index",
+      "title": "Self hosting: What, How, and Why",
       "id": 0,
       "isMdx": true,
       "isFolder": false,
       "createdAt": 1721562901,
-      "modifiedAt": 1721835319,
-      "route": "index.mdx"
+      "modifiedAt": 1725719990,
+      "route": "index.mdx",
+      "description": "Introduction to self hosting, and a guide to setting up a home server.",
+      "icon": "selfhosted.png",
+      "banner": "/test.jpg",
+      "tags": ["guide"]
     }
   ]
 }
