@@ -3,6 +3,8 @@ import react from '@vitejs/plugin-react';
 import sassDts from 'vite-plugin-sass-dts';
 import mdx from '@mdx-js/rollup';
 import path from 'path';
+import remarkFrontmatter from 'remark-frontmatter';
+import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,6 +13,7 @@ export default defineConfig({
     sassDts(),
     mdx({
       exclude: './src/stories/**/*.mdx',
+      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
     }),
   ],
   css: {

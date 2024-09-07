@@ -54,6 +54,8 @@
     "jest-environment-jsdom": "^29.7.0",
     "lint-staged": "^15.2.7",
     "prettier": "^3.3.2",
+    "remark-frontmatter": "^5.0.0",
+    "remark-mdx-frontmatter": "^5.0.0",
     "sass": "^1.77.6",
     "storybook": "^8.2.2",
     "to-vfile": "^8.0.0",

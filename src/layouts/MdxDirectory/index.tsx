@@ -5,15 +5,21 @@ type MdxDirectoryMeta = {
   directoryTitle: string;
   directoryDescription: string;
   pages: Array<{
-    title: string;
     id: number;
     isMdx: boolean;
     isFolder: boolean;
     createdAt: number;
     modifiedAt: number;
     route: string;
+
+    title: string;
+    description?: string;
+    icon?: string;
+    banner?: string;
+    tags?: Array<string>;
   }>;
 };
+
 export default function MdxDirectory({
   mdxData,
 }: {
