@@ -10,36 +10,38 @@ tags: ["guide"]
 
 # Home server
 
-<GithubLink link="https://github.com/source-academy/java-slang" />
+<GithubLink link="https://github.com/Chang-CH/self-hosted" />
 
-"Save" on hosting costs with this one simple trick!
+## What is self hosting?
+
+Self hosting refers to hosting services on your own server, rather than using a third party service like Amazon AWS or Google Cloud.
+Self hosting can be fairly tedious to set up, but there are several reasons you might want to self host a server:
+
+1. **Privacy**: You have full control over your data. Most free services we use are not free, but rather we pay with our data. See: [De-google](https://en.wikipedia.org/wiki/DeGoogle)
+2. **Cost**: If you have a lot of data, or require a lot of processing power, and have an old laptop lying around, it might be cheaper than a cloud service for the same specs.
+3. **Customization**: You are free to customize the server to your needs. Some cloud providers limit or paywall certain features, such as cronjobs.
+
+That said, there are some considerations to keep in mind:
+
+1. **Security**: You are responsible for the security of your server (and everyone else on the same network as your machine!)
+2. **Maintenance**: You are responsible for keeping your server up to date, and backing up your data.
 
 ## How it works
 
-Say we are accessing `jellyfin.domain.com`. The request goes through the below layers:
+For how a web service works, there is an excellent article written by mozilla [here](https://developer.mozilla.org/en-US/docs/Web/Performance/How_browsers_work).
+For self hosted services, there are a few main differences:
 
-1. Cloudfare proxy DNS: resolves the domain to an IP. If we enable cloudfare proxy, this IP is not actually the IP of the server, but cloudfare's proxy IP, a reverse proxy. Also a firewall.
-2. Proxmox + OPNsense: firewall/router that sits between the server and the internet. It can monitor and block incoming/outgoing traffic.
-4. Nginx: Reverse proxy. Multiple domains can be hosted, and we only need to expose port 443. Nginx then proxies the request to the appropriate port/service.
-5. Authentik: SSO authentication.
-6. Jellyfin: The actual service we wish to access, living in a docker container.
+1. **No static IPs**: Unless you are on a premium internet plan, it is likely that your public IP address changes every now and then. This means you need a dynamic DNS service to constantly update your public IP.
+2. **Port forwarding**: By default, most routers block incoming connections. You need to set up port forwarding to allow incoming connections to your server.
 
 ## Services
 
-1. Docker media center
-   1. SABnzbd: usenet downloader
-   2. Transmission: torrent downloader
-   3. Sonarr: TV show downloader
-   4. Radarr: movie downloader
-   5. Prowlarr: indexer
-   6. Jellyfin: media server
-   7. Jellyseerr: media discovery and request management
-2. Firefly 3: personal finance manager
-3. Authentik: SSO authentication
-4. Yacht: container management dashboard
-5. N8N: Automation + bot integration
+Below is a list of services that I run:
 
-## Other services
+1. Firefly 3: personal finance manager
+2. Authentik: SSO authentication
+3. Yacht: container management dashboard
+4. N8N: Automation + bot integration
 
 Other interesting FOSS services to self host can be found at the below links:
 

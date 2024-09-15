@@ -1,10 +1,8 @@
-# Leetcode flowchart
+# Leetcode Tech
 
 ## Known constraints
 
-A sort of hacky way to narrow down your solutions based on the magnitude of the input. Only applicable for online tests, 
-interviews rarely provide concrete constraints. Try not to rely on this too much.
-
+A sort of hacky way to narrow down your solutions based on the magnitude of the input. Try not to rely on this too much, since it spoils the fun sometimes.
 
 There are a few breakpoints to remember:
 
@@ -12,21 +10,123 @@ There are a few breakpoints to remember:
 2. 10^5: O(n log n) is the maximum complexity you can afford.
 3. 10^6: O(n) is the maximum complexity you can afford.
 
-## n^2 solutions
+### n^2 solutions
 
 Probably the biggest category of solutions. Do heavily consider DP/ recursion.
 
 1. Brute force: Try all possible combinations.
 2. DP: Given the solution to a subproblem k(n-1), can you find k(n)?
 
-## n log n solutions
+### n log n solutions
 
 1. Is rearrangement allowed? If yes, consider sorting + another nlogn or n solution.
 2. If no, is the solution strictly increasing? i.e. if optimal answer is k, are k+1 ... valid solutions? Given the answer, can you verify the solution in O(nlogn) time? If yes, consider binary search.
 3. Binary search n times
 4. Quick select: partition and recurse.
 
-## n solutions
+### n solutions
 
 1. sliding window: is the answer related to finding a contiguous subarray? If so consider 2 pointer sliding window
 2. greedy: ignoring all else, can we be sure that taking the best local solution will lead to the best global solution?
+
+## Templates and stdlib
+
+Depending on your language of choice, certain data structures might not be available. You can implement them yourself ahead of time, and paste them in during contests.
+Additionally, some useful imports are allowed. For python, here's a bunch:
+
+1. `heapq`: min/max heap. `heapq.heappush(array, item)`, `heapq.heappop(array)`, more lightweight than BBST based sorted lists.
+2. `collections`: OrderedDict, maintains order of insertion.
+    ```python
+    from collections import OrderedDict
+    d = OrderedDict()
+    d['a'] = 1
+    ```
+3. functools: `functools.lru_cache(maxsize=None)`, memoization decorator.
+    ```python
+    from functools import cache
+    @cache
+    def toMemoize(n):
+        pass
+    ```
+4. sortedcontainers
+    ```py
+    from sortedcontainers import SortedList
+    l = SortedList()
+    l.update([0, 4, 1, 3, 2])
+    l.index(3) # 3
+    l.add(5)
+    l[-1] # 5
+    ```
+### Data structures
+
+**Union Find**: TC O(inverse ackermann function) ~= O(1), SC O(n)
+
+```python
+class UF:
+    def __init__(self, val):
+        self.parent = self
+        self.val = val
+    
+    def find(self):
+        if self.parent != self:
+            self.parent = self.parent.find()
+        return self.parent
+    
+    def union(self, other):
+        sp = self.find()
+        op = other.find()
+        sp.parent = op
+```
+
+**Segment Tree**: TC O(log n) for range queries, SC O(n)
+
+```python
+class SegmentTree:
+    def __init__(self, arr, start = 0, end = len(arr) - 1):
+        self.start = start
+        self.end = end
+        self.mid = (start + end) // 2
+
+        if start == end:
+            self.left = None
+            self.right = None
+            self.val = arr[start]
+            return self
+        
+        self.left = SegmentTree(arr, start, self.mid)
+        self.right = SegmentTree(arr, self.mid + 1, end)
+        self.val = self.operation(self.left.val, self.right.val)
+
+    
+    def operation(self, a, b):
+        # Modify this
+        return a + b
+    
+    def update(self, i, val):
+        if self.start == self.end and self.start == i:
+            self.val = val
+            return
+        
+        if i <= self.mid:
+            self.left.update(i, val)
+        else:
+            self.right.update(i, val)
+        self.val = self.operation(self.left.val, self.right.val)
+
+    
+    def query(self, l, r):
+        if self.start == l and self.end == r:
+            return self.val
+        
+        if r <= self.mid:
+            return self.left.query(l, r)
+        if l > self.mid:
+            return self.right.query(l, r)
+        
+        return self.operation(self.left.query(l, self.mid), self.right.query(self.mid + 1, r))
+```
+
+
+
+
+

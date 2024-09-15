@@ -12,6 +12,25 @@ export enum CardSize {
   LARGE,
 }
 
+export enum CardAlignment {
+  START,
+  CENTER,
+}
+
+export type CardProps = {
+  variant: CardVariant;
+  size?: CardSize;
+  alignment?: CardAlignment;
+  children: React.ReactNode;
+  className?: string;
+  style?: {
+    [key: string]: any;
+  };
+  rest?: {
+    [key: string]: any;
+  };
+};
+
 export default function Card({
   variant,
   ...props
