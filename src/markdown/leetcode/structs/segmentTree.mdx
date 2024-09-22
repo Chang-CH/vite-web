@@ -1,3 +1,11 @@
+---
+
+title: "Segment Tree"
+description: "Data structure for efficient range queries and updates"
+tags: ["structs"]
+
+---
+
 # Segment Tree
 
 Use case: Range queries, what is the maximum value in range [l, r]? More overhead/ boilerplate than Fenwick Tree, but more flexible (fenwick can only sum/subtract etc., not min/max).
@@ -5,38 +13,69 @@ Use case: Range queries, what is the maximum value in range [l, r]? More overhea
 - Time Complexity: O(log n) 
 - Space Complexity: O(n)
 
+## Intuition
+
+- suppose we have an array of n size, we wish to do some query of range [l,r]
+- we build a tree with n leaf nodes (total 2n nodes). each leaf node has value of the array element at that index.
+- each internal node has value of some operation on its children. For example, the sum of its children.
+- to query [l,r], we check 3 cases:
+    - if the entire range is within the left child `r <= mid`, we recurse on the left child. vice versa for right child `l > mid`.
+    - if the range is split between left and right child, we recurse on both children and combine the results.
+
+## Why cant we use fenwick trees?
+
+Fenwick trees rely on the fact that the operation is invertible. 
+Suppose we want to query the range `[4, 16]`. fenwick tree computes this by subtracting `[16, n]` from `[4, n]`.
+Suppose that the operation is now `max`. Given `max([4, n]) = 10` and `max([16, n]) = 10`, we cannot be sure that `max([4, 16]) = 10`.
+
+## Key points
+
+- segment trees are 0 indexed for queries/updates. 
+- for any tree node, its parent is at index i // 2, left child is at index i * 2, right child is at index i * 2 + 1.
+- The first leaf node is at index n, and the last leaf node is at index 2n - 1.
+
 ```python
 class SegmentTree:
-    def __init__(self, arr):
-        self.n = len(arr)
-        self.tree = [0] * (2 * self.n)
-        self.tree[self.n:] = arr
-        for i in range(self.n - 1, 0, -1):
-            self.tree[i] = self.operation(self.tree[i * 2], self.tree[i * 2 + 1])
+    def __init__(self, arr, start = 0, end = len(arr) - 1):
+        self.start = start
+        self.end = end
+        self.mid = (start + end) // 2
+
+        if start == end:
+            self.left = None
+            self.right = None
+            self.val = arr[start]
+            return self
+        
+        self.left = SegmentTree(arr, start, self.mid)
+        self.right = SegmentTree(arr, self.mid + 1, end)
+        self.val = self.operation(self.left.val, self.right.val)
+
     
     def operation(self, a, b):
         # Modify this
         return a + b
     
     def update(self, i, val):
-        i += self.n
-        self.tree[i] = val
-        while i > 1:
-            i //= 2
-            self.tree[i] = self.operation(self.tree[i * 2], self.tree[i * 2 + 1])
+        if self.start == self.end and self.start == i:
+            self.val = val
+            return
+        
+        if i <= self.mid:
+            self.left.update(i, val)
+        else:
+            self.right.update(i, val)
+        self.val = self.operation(self.left.val, self.right.val)
+
     
     def query(self, l, r):
-        l += self.n
-        r += self.n
-        res = 0
-        while l < r:
-            if l % 2:
-                res = self.operation(res, self.tree[l])
-                l += 1
-            if r % 2:
-                r -= 1
-                res = self.operation(res, self.tree[r])
-            l //= 2
-            r //= 2
-        return res
+        if self.start == l and self.end == r:
+            return self.val
+        
+        if r <= self.mid:
+            return self.left.query(l, r)
+        if l > self.mid:
+            return self.right.query(l, r)
+        
+        return self.operation(self.left.query(l, self.mid), self.right.query(self.mid + 1, r))
 ```

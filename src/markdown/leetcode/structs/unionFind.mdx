@@ -1,0 +1,47 @@
+---
+
+title: "Union Find/ Disjoint Set Union"
+description: "Data structure for checking connectivity between elements"
+tags: ["structs"]
+
+---
+
+# Union Find
+
+Use case: given `edges[]`, find out if nodes `a` and `b` are connected. **Highly efficient**, almost linear query time.
+
+- Time Complexity: O(log n) (actually O(alpha(n)), where alpha is the inverse Ackermann function, which is almost linear time)
+- Space Complexity: O(n)
+
+## Intuition
+
+We implement two functions:
+
+1. `find`: find the root of the current node.
+    - if the current node is the root (i.e. `self.parent == self`), return the current node.
+    - otherwise, recuse on the parent.
+    - path compression: set the parent of the current node to the root, so that the next time we query the parent, we get the root directly.
+2. `union`: connect two nodes.
+    - find the root of both nodes using `find()`.
+    - if the roots are different, set the parent of one root to the other root.
+
+## Key points
+
+```python
+class UnionFind:
+    def __init__(self):
+        self.parent = self
+
+    def find(self):
+        if self.parent == self:
+            return self
+        self.parent = self.parent.find() # path compression, the reason for the inverse ackermann TC
+        return self.parent
+
+    def union(self, other):
+        root_x = self.find()
+        root_y = other.find()
+
+        if root_x != root_y:
+            root_x.parent = root_y
+```
