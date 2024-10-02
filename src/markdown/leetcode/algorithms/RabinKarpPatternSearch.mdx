@@ -1,0 +1,48 @@
+---
+
+title: "Knuth Morris Pratt (KMP) + Longest Prefix Suffix (LPS)"
+description: "Algorithm for string pattern matching"
+tags: ["algorithms"]
+
+---
+
+# Rabin Karp Rolling Hash Pattern search
+
+Use case: Given a string `s` and a patterns `p`, find all occurrences of `p` in `s`.
+
+- Time Complexity: O(n + m)
+- Space Complexity: O(1)
+
+This is pretty similar to the Knuth Morris Pratt algorithm, with different pros and cons:
+
+1. Complexity: Rabin Karp is much simpler to implement than KMP
+2. Unstable: Rabin Karp might not be able to use a perfect hash (pattern too long), leading to false positives.
+
+Note that both algorithms have the same time complexity O(n + m).
+
+In general, Rabin Karp is used over KMP for a few cases:
+
+1. Short pattern: Rabin Karp is easier to implement, and if perfect hash is possible then why not.
+    - Condition: `len(p) ** len(charset) < INT_MAX` (perfect hash)
+2. Conditional patterns (instead of exact match) or too many patterns
+    - `len(patterns) > 100` depends on string length. KMP uses `len(patterns) * len(s)` space.
+    - match conditions: all vowels must appear an even number of times, etc.
+    - order does not matter: as long as all characters present, treat as match.
+3. Fixed size window:
+    - Rabin Karp relies on fixed size sliding windows
+
+## Intuition (perfect hash)
+
+Suppose we want to match a pattern `abc` in a string `abdbcabccbb`. Let us simplify this problem, using digits instead of characters:
+
+- `abc` -> `123`
+- `abdbcabccbb` -> `12423123322`
+
+we know the pattern is 3 digits, so we do a sliding window
+
+1. start: `[124]23123322`, `hash = 124 != 123`, no match
+2. slide the window: `1[242]3123322`. Notice `242 = 124 * 10 - start * 10 ** 3 + next`. This is the rolling hash.
+3. eventually we reach the hash `12423[123]322`, and we have a match.
+
+
+

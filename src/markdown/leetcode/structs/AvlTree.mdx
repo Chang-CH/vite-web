@@ -1,0 +1,113 @@
+---
+
+title: "AVL Tree"
+description: "Data structure for maintaining sorted data"
+tags: ["structs"]
+
+---
+
+# AVL Tree
+
+Use case: Maintaining sorted data, with O(log n) insertions, deletions and lookups(bin search, by value or rank).
+
+- Time Complexity: O(log n)
+- Space Complexity: O(n)
+
+Unless explicitly required to implement, use `from sortedcontainers import SortedList` for simplicity.
+
+## Insertion
+
+```python
+ def insert(self, root, value):
+    if not root:
+        return Node(value)
+    elif value < root.value:
+        root.left = self.insert(root.left, value)
+    else:
+        root.right = self.insert(root.right, value)
+    return self.balance(root)
+```
+
+## Deletion
+
+```python
+def min_value_node(self, root):
+    current = root
+    while current.left:
+        current = current.left
+    return current
+
+def delete(self, root, value):
+    if not root:
+        return root
+
+    if value < root.value:
+        root.left = self.delete(root.left, value)
+    elif value > root.value:
+        root.right = self.delete(root.right, value)
+    else:
+        # trivial case: only left/right
+        if not root.left:
+            return root.right
+        if not root.right:
+            return root.left
+
+        temp = self.min_value_node(root.right)
+        root.value = temp.value
+        root.right = self.delete(root.right, temp.value)
+    return self.balance(root)
+```
+
+## Balancing
+
+This is the complicated part of the AVL tree. We need to maintain the balance of the tree after each insertion/deletion.
+
+The rules are simple: the height of the left and right subtrees of any node differ by at most 1.
+
+There are 4 cases to consider:
+
+1. left left: left child overweight, left child's left heavy
+2. right right: right child overweight, right child's right heavy
+3. left right: left child overweight, left child's right heavy
+4. right left: right child overweight, right child's left heavy
+
+For cases 1 and 2, we simply rotate in the opposite direction.
+For cases 3 and 4, we also need to rotate on the child first.
+
+```python
+def get_balance(self, root):
+    if not root:
+        return 0
+    return root.left.height - root.right.height
+
+def left_rotate(self, root):
+    new_root = root.right
+    root.right = new_root.left
+    new_root.left = root
+
+    root.height = 1 + max(root.left.height, root.right.height)
+    new_root.height = 1 + max(new_root.left.height, new_root.right.height)
+    return new_root
+
+def balance(self, root):
+    if not root:
+        return root
+    
+    root.height = 1 + max(root.left.height, root.right.left)
+
+    if abs(self.get_balance()) <= 1:
+        return root
+
+
+    # left heavy
+    if root.left.height > root.right.height:
+        # left right case
+        if self.get_balance(root.left) < 0:
+            root.left = self.left_rotate(root.left)
+        return self.right_rotate(root)
+    else:
+        # right left case
+        if self.get_balance(root.right) > 0:
+            root.right = self.right_rotate(root.right)
+        return self.left_rotate(root)
+```

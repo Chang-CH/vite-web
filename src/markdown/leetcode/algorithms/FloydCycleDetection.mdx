@@ -1,0 +1,29 @@
+---
+
+title: "Floyd's cycle detection"
+description: "Algorithm for detecting, locating and measuring cycles in a sequence"
+tags: ["algorithms"]
+
+---
+
+# Floyd's cycle detection
+
+Use case: Given a linked list (or stream!), detect if there is a cycle in the list and return the length of the loop.
+
+- Time Complexity: O(n)
+- Space Complexity: O(1)
+
+If it is possible to store visited hash map O(n) space, or you can modify the linked list with a visited flag, then those would be a better option out of simplicity.
+
+## Intuition
+
+Floyd's is a 2 pointer algorithm. It uses a slow pointer and a fast pointer. 
+The fast pointer moves twice as much as the slow pointer. If a cycle is present, the fast pointer must eventually catch up to the slow pointer.
+Furthermore, we are able to determine the length of the loop using some maths:
+
+- suppose the linked list has a cycle of length `m` and a start of length `n`.
+- suppose the slow pointer has met the fast pointer after `k` steps, where `k = n + x` for some `x`.
+- the fast pointer has moved `2k` steps where `2k = n + x + m`.
+- therefore loop length is `k`.
+- furthermore, we notice than `m = n + x`. If we move one pointer to the start and move both pointers at the same speed, they will meet at the start of the loop.
+- this is because `n + x + n == m + n == n`, the pointer in front would have made exactly 1 loop around the cycle.

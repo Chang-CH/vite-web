@@ -13,6 +13,13 @@ Use case: Given a string `s` and a pattern `p`, find all occurrences of `p` in `
 - Time Complexity: O(n + m)
 - Space Complexity: O(m)
 
+This is pretty similar to the Rabin-Karp algorithm, with different pros and cons:
+
+1. Complexity: KMP is much more complex to implement than Rabin Karp
+2. Stable: KMP is guaranteed correct, whereas Rabin Karp might not be able to use a perfect hash (pattern too long), leading to false positives.
+
+Note that both algorithms have the same time complexity O(n + m).
+
 ## Knuth Morris Pratt (KMP)
 
 The KMP algorithm relies on the Longest Prefix Suffix array. 
@@ -105,4 +112,10 @@ def compute_lps(p):
     return lps
 ```
 
+## Extension: Aho Corasick Algorithm
 
+The Aho Corasick algorithm is a generalisation of the KMP, representing (a set of) patterns as a trie.
+At each node, we store the subsequent characters and a failure path.
+Just like how in KMP, when we find a mismatch we reset to the LPS value, in Aho Corasick we reset to prefix node.
+
+![Aho Corasick](./aho_corasick.jpg)
