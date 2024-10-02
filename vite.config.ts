@@ -24,9 +24,10 @@ export default defineConfig({
     },
   },
   build: {
-    lib: {
-      entry: path.resolve(__dirname, 'src/index.ts'),
-    },
+    // lib: {
+    //   name: 'vite-web-lib',
+    //   entry: path.resolve(__dirname, 'src/index.ts'),
+    // },
   },
   resolve: {
     alias: {
