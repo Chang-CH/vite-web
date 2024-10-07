@@ -104,6 +104,25 @@ const router = createBrowserRouter([
     },
   },
   {
+    // Rollup dynamic imports only go 1 level deep: i.e. import(`path/${param}.mdx`), only path/file works, path/file/file does not
+    path: '/leetcode/*',
+    element: <MarkdownArticle Layout={CleanBlog} />,
+    loader: ({ params }) => {
+      console.log(`@markdown/leetcode/${params['*']}.mdx`);
+      return Promise.all([import(`@markdown/leetcode/${params['*']}.mdx`)])
+        .then(res => {
+          console.log(res);
+          return {
+            MDXContent: res[0].default,
+          };
+        })
+        .catch(e => {
+          console.log('ASDAS');
+          console.error(e);
+        });
+    },
+  },
+  {
     path: '/experimental/mdx-submodule',
     element: (
       <Suspense fallback={<StackSpinner />}>
