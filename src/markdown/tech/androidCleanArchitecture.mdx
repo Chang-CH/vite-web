@@ -1,0 +1,40 @@
+---
+
+title: "Clean Architecture in Android"
+description: "Applying clean architecture principles in Android development"
+tags: ["android", "kotlin", "java"]
+hidden: true
+
+---
+
+# Clean Architecture in Android
+
+Recently, my team at OKX released the refactored version of our DeFi product details page. Let's discuss whats changed, and why we made those changes.
+
+## Clean Architecture overview
+
+```mermaid
+classDiagram
+    note "From Duck till Zebra"
+    Animal <|-- Duck
+    note for Duck "can fly\ncan swim\ncan dive\ncan help in debugging"
+    Animal <|-- Fish
+    Animal <|-- Zebra
+    Animal : +int age
+    Animal : +String gender
+    Animal: +isMammal()
+    Animal: +mate()
+    class Duck{
+        +String beakColor
+        +swim()
+        +quack()
+    }
+    class Fish{
+        -int sizeInFeet
+        -canEat()
+    }
+    class Zebra{
+        +bool is_wild
+        +run()
+    }
+```

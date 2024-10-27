@@ -5,6 +5,7 @@ import mdx from '@mdx-js/rollup';
 import path from 'path';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
+import rehypeMermaid from 'rehype-mermaid';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -14,6 +15,16 @@ export default defineConfig({
     mdx({
       exclude: './src/stories/**/*.mdx',
       remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
+      rehypePlugins: [
+        [
+          rehypeMermaid,
+          {
+            // strategy: 'img-svg',
+            strategy: 'pre-mermaid',
+            colorScheme: 'dark',
+          },
+        ],
+      ],
     }),
   ],
   css: {

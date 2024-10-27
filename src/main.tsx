@@ -7,6 +7,7 @@ import StackSpinner from '@components/stdlib/loader/StackSpinner';
 import MarkdownArticle from '@components/markdown/MarkdownPage';
 import CleanBlog from './layouts/CleanBlog';
 import TestDirectory from '@pages/experimental/mdx-directory';
+import mermaid from 'mermaid';
 
 const SelfHosted = React.lazy(() => import('@pages/selfhosted'));
 const Projects = React.lazy(() => import('@pages/projects'));
@@ -139,6 +140,20 @@ const router = createBrowserRouter([
     ),
   },
 ]);
+
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'dark',
+  securityLevel: 'loose',
+  fontFamily: 'monospace',
+  darkMode: true,
+  themeVariables: {
+    primaryColor: '#ff0000',
+    primaryBorderColor: '#00ff00',
+    primaryTextColor: '#0000ff',
+    primaryTextFontFamily: 'monospace',
+  },
+});
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

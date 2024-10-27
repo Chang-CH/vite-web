@@ -1,6 +1,32 @@
+---
+
+title: "CSS Box Model"
+description: "Practical examples of the CSS box model"
+tags: ["frontend", "css"]
+
+---
+
 # CSS Box model
 
-An element's actual width is calculated as `width + padding + border`. The same goes for the height. The `margin` is not included in the calculation.
+The CSS box model is a way of representing the space an element occupies on a webpage.
+
+Let us illustrate with an example:
+
+<div style={{width: "300px", border: "1px solid red", margin: "10px"}}>
+<p>300px</p>
+</div>
+
+<div style={{width: "300px", padding: "50px", border: "1px solid blue", margin: "10px"}}>
+<p>300px + 50px padding</p>
+</div>
+
+In this case, even though both divs are 300px, they are not of equal width, due to the extra padding on the blue div. 
+
+What if we want both divs to be 300px, but have fixed padding in 1 div without manually calculating the width?
+
+## Why this happens
+
+An element's `width` is calculated as excluding `padding` and `border`. The same goes for the height.
 
 This means that if we have a div with `width: 100%`, adding padding will cause it to overflow its parent element.
 
@@ -16,17 +42,28 @@ This means that if we have a div with `width: 100%`, adding padding will cause i
 }
 ```
 
+## Fixing the issue
+
 To fix this, we use `box-sizing: border-box`. This changes the calculated width to include padding and border.
 
 ```css
-.parent {
-  width: 100vw;
+.red {
+  width: 300px;
 }
 
-.child {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid black;
+.blue {
+  width: 300px;
+  padding: 50px;
   box-sizing: border-box;
 }
 ```
+
+<div style={{width: "300px", border: "1px solid red", margin: "10px"}}>
+<p>300px</p>
+</div>
+
+<div style={{width: "300px", padding: "50px", border: "1px solid blue", margin: "10px", boxSizing: "border-box"}}>
+<p>300px + 50px padding</p>
+</div>
+
+Now both divs are of equal width, even though the blue div has padding.
