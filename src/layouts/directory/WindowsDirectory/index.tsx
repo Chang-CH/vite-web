@@ -1,8 +1,6 @@
-import BgDots from '@components/backgrounds/BgDots';
 import styles from './s.module.scss';
-import TurboCard from '@components/stdlib/card/TurboCard';
-import Tag from '@components/stdlib/tag';
-import { FaClock } from 'react-icons/fa';
+import RandomizeText from '@components/textfx/randomize';
+import WindowsCard from '@components/stdlib/card/WindowsCard';
 
 type MdxDirectoryMeta = {
   directoryTitle: string;
@@ -23,43 +21,34 @@ type MdxDirectoryMeta = {
   }>;
 };
 
-export default function MdxDirectory({
+export default function WindowsDirectory({
   mdxData,
 }: {
   mdxData: MdxDirectoryMeta;
 }) {
   console.log(mdxData);
   return (
-    <BgDots className={styles.background}>
+    <div className={styles.background}>
       <h1>{mdxData.directoryTitle}</h1>
       <h2>{mdxData.directoryDescription}</h2>
       <div className={styles.highlightsDiv}>
         {mdxData.pages.map(page => {
           return (
-            <TurboCard className={styles.card} key={page.id}>
+            <WindowsCard className={styles.card} key={page.id}>
               {page.banner ? (
                 <img src={page.banner} className={styles.cardBanner} />
               ) : null}
               <div className={styles.cardContent}>
                 <a href={page.route}>
-                  <h2>{page.title}</h2>
+                  <RandomizeText loops={3}>{page.title}</RandomizeText>
                 </a>
-                <Tag
-                  LeadingIcon={FaClock}
-                  text={new Date(page.createdAt * 1000)
-                    .toLocaleString('en-GB', {
-                      day: '2-digit',
-                      month: 'short',
-                      year: '2-digit',
-                    })
-                    .toString()}
-                />
                 <p>{page.description}</p>
+                <p>{new Date(page.createdAt * 1000).toLocaleString()}</p>
               </div>
-            </TurboCard>
+            </WindowsCard>
           );
         })}
       </div>
-    </BgDots>
+    </div>
   );
 }

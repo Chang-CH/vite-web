@@ -23,11 +23,12 @@
   height: 100%;
   flex: 1;
   padding-block: 5rem;
+  background: teal;
 }
 
 .card {
-  width: 500px;
-  min-height: 300px;
+  width: 600px !important;
+  height: 400px !important;
   overflow: clip;
 }
 
@@ -42,7 +43,6 @@
   width: 100%;
   padding: 1rem;
   box-sizing: border-box;
-  align-items: baseline;
 }
 
 .highlightsDiv {

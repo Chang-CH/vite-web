@@ -1,0 +1,24 @@
+export const pages = {
+  directoryTitle: 'Tech',
+  directoryDescription: '',
+  pages: [
+    {
+      title: 'Css Box Model',
+      id: 0,
+      isMdx: true,
+      isFolder: false,
+      createdAt: 1724082416,
+      modifiedAt: 1724082416,
+      route: 'cssBoxModel.mdx',
+    },
+    {
+      title: 'Java Sync',
+      id: 1,
+      isMdx: true,
+      isFolder: false,
+      createdAt: 1724082416,
+      modifiedAt: 1724082416,
+      route: 'javaSync.mdx',
+    },
+  ],
+};

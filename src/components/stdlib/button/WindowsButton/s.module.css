@@ -1,0 +1,13 @@
+.normalButton {
+  display: flex;
+  flex-direction: row;
+  margin: 5px;
+  align-items: center;
+  padding: 5px;
+  background-color: #ccc;
+  border: 3px outset #ccc;
+}
+
+.normalButton:hover {
+  border: 3px inset #ccc;
+}

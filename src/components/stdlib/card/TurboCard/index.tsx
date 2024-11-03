@@ -21,7 +21,7 @@ const TurboCard = ({
   return (
     <div
       className={
-        className ? `${styles.container} ${className}` : styles.container
+        className ? `${className} ${styles.container}` : styles.container
       }
       style={style}
       {...rest}

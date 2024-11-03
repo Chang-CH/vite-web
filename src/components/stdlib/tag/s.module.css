@@ -1,0 +1,13 @@
+.tag {
+  padding-inline: 1ch;
+  border-radius: 50vh;
+  background-color: gray;
+  font-weight: bold;
+  font-size: x-small;
+  display: flex;
+  flex-direction: row;
+}
+
+.tag > * {
+  margin-right: 1ch;
+}
