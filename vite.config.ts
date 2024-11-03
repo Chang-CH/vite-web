@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite';
+import { defineConfig, Plugin, ResolvedConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import sassDts from 'vite-plugin-sass-dts';
 import mdx from '@mdx-js/rollup';
@@ -6,6 +6,71 @@ import path from 'path';
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkMdxFrontmatter from 'remark-mdx-frontmatter';
 import rehypeMermaid from 'rehype-mermaid';
+import chokidar from 'chokidar';
+import { generatePagesTs } from './tools/toc';
+import { Stats } from 'fs';
+
+function generateMdxDirectory(): Plugin[] {
+  let config: ResolvedConfig;
+
+  return [
+    {
+      name: 'generate-mdx-directory:serve',
+      apply: 'serve',
+      async configResolved(_config: ResolvedConfig) {
+        config = _config;
+      },
+      configureServer(server: any) {
+        function reloadPage() {
+          // Function that sends a signal to reload the server.
+          console.log('reload page run');
+          server.ws.send({ type: 'full-reload', path: '*' });
+          generatePagesTs('src/markdown', 'src/markdown');
+        }
+        const watcher = chokidar.watch('src/markdown', {
+          ignored: (val: string, stats?: Stats) => {
+            if (!stats?.isFile()) {
+              return false;
+            }
+            return !val.endsWith('.mdx');
+          }, // only watch js files
+          persistent: true,
+          cwd: config.root, // Define project root path
+          ignoreInitial: true, // Don't trigger chokidar on instantiation.
+        });
+        console.log(config.root);
+
+        watcher
+          .on('add', reloadPage) // Add listeners to add, modify, delete.
+          .on('change', reloadPage)
+          .on('unlink', reloadPage);
+
+        return () => {
+          server.middlewares.use(async (req: any, res: any, next: any) => {
+            return next();
+          });
+        };
+      },
+    },
+    // {
+    //   name: 'generate-mdx-directory:build',
+    //   apply: 'build',
+    //   async configResolved(_config: ResolvedConfig) {
+    //     config = _config;
+    //   },
+    //   writeBundle() {
+    //     const sprite = getSpriteContent({ pattern: 'src/icons/*.svg' });
+    //     const filePath = path.resolve(
+    //       config.root,
+    //       config.build.outDir,
+    //       'sprite.svg'
+    //     );
+    //     fs.ensureFileSync(filePath);
+    //     fs.writeFileSync(filePath, sprite);
+    //   },
+    // },
+  ];
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -26,6 +91,7 @@ export default defineConfig({
         ],
       ],
     }),
+    generateMdxDirectory(),
   ],
   css: {
     preprocessorOptions: {

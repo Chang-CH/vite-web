@@ -14,6 +14,19 @@ export function parseFrontmatter(filePath: string): frontmatterData {
   return file.data.matter as any;
 }
 
+export function stringify(obj_from_json: { [key: string]: any }): string {
+  if (typeof obj_from_json !== 'object' || Array.isArray(obj_from_json)) {
+    // not an object, stringify using native function
+    return JSON.stringify(obj_from_json);
+  }
+  // Implements recursive object serialization according to JSON spec
+  // but without quotes around the keys.
+  const props = Object.keys(obj_from_json)
+    .map(key => `${key}:${stringify(obj_from_json[key])}`)
+    .join(',');
+  return `{${props}}`;
+}
+
 // Helper function to convert camel case to title case
 function camelCaseToTitleCase(camelCase: string) {
   return camelCase
@@ -81,7 +94,7 @@ function processDirectory(directoryPath: string, root: string, outDir: string) {
       }
 
       // Recursively process the folder and create pages.json inside it
-      generatePagesJson(filePath, outDir + '/' + route);
+      generatePagesTs(filePath, outDir + '/' + route);
     } else if (ext === '.mdx' || ext === '.md') {
       const frontmatter = ext === '.mdx' ? parseFrontmatter(filePath) : {};
       title =
@@ -112,7 +125,7 @@ function processDirectory(directoryPath: string, root: string, outDir: string) {
 }
 
 // Main function to generate pages.json
-function generatePagesJson(root: string, outDir = 'dist') {
+export function generatePagesJson(root: string, outDir = 'dist') {
   const distDir = path.join(outDir);
   fs.mkdirSync(distDir, { recursive: true });
 
@@ -121,7 +134,20 @@ function generatePagesJson(root: string, outDir = 'dist') {
   //     path.join(distDir, "pages.json"),
   //     JSON.stringify(rootPages, null, 2)
   //   );
-  console.log(rootPages);
+  // console.log(rootPages);
+  console.log('JSON CALLED: WRITTEN ' + rootPages.directoryTitle);
 }
 
-generatePagesJson('src');
+export function generatePagesTs(root: string, outDir = 'dist') {
+  const distDir = path.join(outDir);
+  fs.mkdirSync(distDir, { recursive: true });
+
+  const rootPages = processDirectory(root, root, outDir);
+  const outFile = path.join(distDir, 'pages.ts');
+  fs.writeFileSync(
+    outFile,
+    `const pages = ${stringify(rootPages)}
+    export default pages;`
+  );
+  console.log(`[${root}][${outDir}]WRITTEN @ ${outFile}`);
+}
