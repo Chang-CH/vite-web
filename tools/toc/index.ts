@@ -24,7 +24,7 @@ export function stringify(obj_from_json: { [key: string]: any }): string {
   const props = Object.keys(obj_from_json)
     .map(key => `${key}:${stringify(obj_from_json[key])}`)
     .join(',');
-  return `{${props}}`;
+  return `{${props.replace(/"/g, "'")}}`;
 }
 
 // Helper function to convert camel case to title case
@@ -146,8 +146,7 @@ export function generatePagesTs(root: string, outDir = 'dist') {
   const outFile = path.join(distDir, 'pages.ts');
   fs.writeFileSync(
     outFile,
-    `const pages = ${stringify(rootPages)}
-    export default pages;`
+    `const pages = ${stringify(rootPages)};export default pages;`
   );
   console.log(`[${root}][${outDir}]WRITTEN @ ${outFile}`);
 }

@@ -25,7 +25,6 @@ function generateMdxDirectory(): Plugin[] {
           // Function that sends a signal to reload the server.
           console.log('reload page run');
           server.ws.send({ type: 'full-reload', path: '*' });
-          generatePagesTs('src/markdown', 'src/markdown');
         }
         const watcher = chokidar.watch('src/markdown', {
           ignored: (val: string, stats?: Stats) => {
@@ -38,12 +37,19 @@ function generateMdxDirectory(): Plugin[] {
           cwd: config.root, // Define project root path
           ignoreInitial: true, // Don't trigger chokidar on instantiation.
         });
-        console.log(config.root);
-
+        const onChange = (path: string) => {
+          const directory = path.split('\\').slice(0, -1).join('\\');
+          console.log(`${path} changes detected in ${directory}`);
+          if (directory === '') {
+            return;
+          }
+          generatePagesTs(directory, directory);
+          reloadPage();
+        };
         watcher
-          .on('add', reloadPage) // Add listeners to add, modify, delete.
-          .on('change', reloadPage)
-          .on('unlink', reloadPage);
+          .on('add', onChange) // Add listeners to add, modify, delete.
+          .on('change', onChange)
+          .on('unlink', onChange);
 
         return () => {
           server.middlewares.use(async (req: any, res: any, next: any) => {
@@ -52,23 +58,6 @@ function generateMdxDirectory(): Plugin[] {
         };
       },
     },
-    // {
-    //   name: 'generate-mdx-directory:build',
-    //   apply: 'build',
-    //   async configResolved(_config: ResolvedConfig) {
-    //     config = _config;
-    //   },
-    //   writeBundle() {
-    //     const sprite = getSpriteContent({ pattern: 'src/icons/*.svg' });
-    //     const filePath = path.resolve(
-    //       config.root,
-    //       config.build.outDir,
-    //       'sprite.svg'
-    //     );
-    //     fs.ensureFileSync(filePath);
-    //     fs.writeFileSync(filePath, sprite);
-    //   },
-    // },
   ];
 }
 
@@ -84,7 +73,6 @@ export default defineConfig({
         [
           rehypeMermaid,
           {
-            // strategy: 'img-svg',
             strategy: 'pre-mermaid',
             colorScheme: 'dark',
           },
