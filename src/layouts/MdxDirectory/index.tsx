@@ -3,6 +3,7 @@ import styles from './s.module.scss';
 import TurboCard from '@components/stdlib/card/TurboCard';
 import Tag from '@components/stdlib/tag';
 import { FaClock } from 'react-icons/fa';
+import { useLoaderData } from 'react-router-dom';
 
 type MdxDirectoryMeta = {
   directoryTitle: string;
@@ -26,15 +27,19 @@ type MdxDirectoryMeta = {
 export default function MdxDirectory({
   mdxData,
 }: {
-  mdxData: MdxDirectoryMeta;
+  mdxData?: MdxDirectoryMeta;
 }) {
-  console.log(mdxData);
+  const loaderData = useLoaderData() as any;
+
+  const data: MdxDirectoryMeta =
+    mdxData ?? (loaderData.loaderMdxData as MdxDirectoryMeta);
+
   return (
     <BgDots className={styles.background}>
-      <h1>{mdxData.directoryTitle}</h1>
-      <h2>{mdxData.directoryDescription}</h2>
+      <h1>{data.directoryTitle}</h1>
+      <h2>{data.directoryDescription}</h2>
       <div className={styles.highlightsDiv}>
-        {mdxData.pages.map(page => {
+        {data.pages.map(page => {
           return (
             <TurboCard className={styles.card} key={page.id}>
               {page.banner ? (

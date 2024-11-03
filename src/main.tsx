@@ -8,6 +8,7 @@ import MarkdownArticle from '@components/markdown/MarkdownPage';
 import CleanBlog from './layouts/CleanBlog';
 import TestDirectory from '@pages/experimental/mdx-directory';
 import mermaid from 'mermaid';
+import MdxDirectory from './layouts/MdxDirectory';
 
 const SelfHosted = React.lazy(() => import('@pages/selfhosted'));
 const Projects = React.lazy(() => import('@pages/projects'));
@@ -105,6 +106,17 @@ const router = createBrowserRouter([
     },
   },
   {
+    path: '/tech',
+    element: <MdxDirectory />,
+    loader: () => {
+      return import('@markdown/tech/pages').then(res => {
+        return {
+          loaderMdxData: res.default,
+        };
+      });
+    },
+  },
+  {
     // Rollup dynamic imports only go 1 level deep: i.e. import(`path/${param}.mdx`), only path/file works, path/file/file does not
     path: '/leetcode/*',
     element: <MarkdownArticle Layout={CleanBlog} />,
@@ -118,7 +130,6 @@ const router = createBrowserRouter([
           };
         })
         .catch(e => {
-          console.log('ASDAS');
           console.error(e);
         });
     },

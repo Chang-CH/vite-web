@@ -11,7 +11,8 @@
     "paths": {
       "@components/*": ["src/components/*"],
       "@pages/*": ["src/pages/*"],
-      "@theme/*": ["src/theme/*"]
+      "@theme/*": ["src/theme/*"],
+      "@markdown/*": ["src/markdown/*"]
     },
     "outDir": "dist",
 

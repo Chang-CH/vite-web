@@ -1,4 +1,4 @@
-export const pages = {
+const pages = {
   directoryTitle: 'Tech',
   directoryDescription: '',
   pages: [
@@ -22,3 +22,5 @@ export const pages = {
     },
   ],
 };
+
+export default pages;
