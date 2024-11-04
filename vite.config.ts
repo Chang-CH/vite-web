@@ -48,14 +48,7 @@ function generateMdxDirectory(): Plugin[] {
         };
         watcher
           .on('add', onChange) // Add listeners to add, modify, delete.
-          .on('change', onChange)
-          .on('unlink', onChange);
-
-        return () => {
-          server.middlewares.use(async (req: any, res: any, next: any) => {
-            return next();
-          });
-        };
+          .on('change', onChange);
       },
     },
   ];

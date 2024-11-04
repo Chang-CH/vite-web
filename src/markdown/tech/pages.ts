@@ -8,7 +8,7 @@ const pages = {
       isMdx: true,
       isFolder: false,
       createdAt: 1730045831,
-      modifiedAt: 1730045831,
+      modifiedAt: 1730643799,
       route: 'androidCleanArchitecture.mdx',
       description:
         'Applying clean architecture principles in Android development',
@@ -16,8 +16,20 @@ const pages = {
       hidden: true,
     },
     {
-      title: 'CSS Box Model',
+      title: 'Creating vite plugins',
       id: 1,
+      isMdx: true,
+      isFolder: false,
+      createdAt: null,
+      modifiedAt: null,
+      route: 'createVitePlugin.mdx',
+      description:
+        'create a vite plugin that watches and generates metadata for mdx files',
+      tags: ['frontend', 'vite'],
+    },
+    {
+      title: 'CSS Box Model',
+      id: 2,
       isMdx: true,
       isFolder: false,
       createdAt: 1724082416,
@@ -28,7 +40,7 @@ const pages = {
     },
     {
       title: 'Java Synchronization',
-      id: 2,
+      id: 3,
       isMdx: true,
       isFolder: false,
       createdAt: 1724082416,

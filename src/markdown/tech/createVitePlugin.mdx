@@ -1,0 +1,112 @@
+---
+title: 'Creating vite plugins'
+description: 'create a vite plugin that watches and generates metadata for mdx files'
+tags: ['frontend', 'vite']
+---
+
+# Creating vite plugins
+
+Vite is a modern build tool that relies on rollup as its bundler under the hood. It generally tends to outperform the more mature webpack, in both hot reload/HMR and build times.
+
+However, since vite is relatively less mature, vite lacks the diversity of the plugin ecosystem that webpack has. Eventually we might not find a plugin that exactly suits our needs, which is when we might want to make one of our own.
+
+## The goal
+
+In this article, we will build a vite plugin that watches mdx files and generates metadata for them, either from the frontmatter or other soruces of information.
+
+![vite mdx plugin](/markdown/tech/vite-plugin-demo.gif)
+
+## Hello World
+
+Let us start with something simple: print `Hello World` whenever the plugin is initialized.
+
+```ts
+export default defineConfig({
+  plugins: [
+    () => {
+      return {
+        name: 'my-plugin',
+        async configResolved(_config: ResolvedConfig) {
+          console.log('Hello World');
+        },
+      };
+    },
+  ],
+});
+```
+
+A plugin is essentially a function that returns either a `Plugin` object or an array of `Plugin[]`. Each `Plugin` object must have a `name` property, which is used to identify the plugin.
+
+Aside from that, a plugin can have a number of hooks, such as `configResolved`, `configureServer`, `transform`, etc. Each hook is called at a different stage of the build process.
+
+`configureServer` is of particular interest to us, since it is called when the dev server is started, and we can use it to watch files. Let us modify our plugin to print the modified file's path whenever a mdx file is modified.
+
+## Watching files
+
+```ts
+function myPlugin(): Plugin[] {
+  let config: ResolvedConfig;
+  return [
+    {
+      name: 'my-plugin:serve',
+      apply: 'serve',
+      async configResolved(_config: ResolvedConfig) {
+        config = _config; // Save the config for later
+      },
+      configureServer(server: any) {
+        const watcher = chokidar.watch('src', {
+          // Watch the src directory
+          ignored: (val: string, stats?: Stats) => !val.endsWith('.mdx'); // only watch mdx files,
+          persistent: true,
+          cwd: config.root, // Define project root path
+          ignoreInitial: true, // Don't trigger chokidar on instantiation.
+        });
+
+        watcher
+          .on('add', reloadPage) // Add listeners to add, modify
+          .on('change', reloadPage);
+
+        function reloadPage(path: string) {
+          console.log(path);
+          server.ws.send({ type: 'full-reload', path: '*' });
+        }
+      },
+    },
+  ];
+}
+```
+
+Let's unpack what we have changed:
+
+1. `apply: 'serve'` and `name: 'my-plugin:serve'`: This tells vite to only apply this plugin when the dev server is started. If we wish to only run our plugin on build instead, we trivially replace `serve` with `build`.
+2. `configureServer`: This hook is called when the dev server is started. When the dev server starts, we use `chokidar` to watch the `src` directory for changes.
+   1. We only watch `.mdx` files, ignoring other file types using `ignored: (val: string, stats?: Stats) => !val.endsWith('.mdx');`.
+   2. We add our listener to `add` events using `watcher.on('add', reloadPage)`, which are triggered when a file is added. Likewise for `change` events.
+   3. We log the file path, passed as argument to `reloadPage`.
+   4. Finally, we reload the page using `server.ws.send({ type: 'full-reload', path: '*' });`.
+
+## Generating metadata
+
+Now that we have the basic setup, let us generate metadata for the mdx files. We will use `gray-matter` to parse the frontmatter and extract the metadata.
+
+```ts
+import { readSync } from 'to-vfile';
+import { matter } from 'vfile-matter';
+
+export function parseFrontmatter(filePath: string): any {
+  const file = readSync(filePath);
+  matter(file);
+  fs.writeFileSync('src/pages.json', JSON.stringify(file.data.matter, null, 2));
+}
+```
+
+We will call this function in our `reloadPage` function.
+
+```ts
+function reloadPage(path: string) {
+  parseFrontmatter(path);
+  server.ws.send({ type: 'full-reload', path: '*' });
+}
+```
+
+And that's it! We have a working vite plugin that watches mdx files and generates metadata for them.
