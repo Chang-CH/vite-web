@@ -9,6 +9,7 @@ import rehypeMermaid from 'rehype-mermaid';
 import chokidar from 'chokidar';
 import { generatePagesTs } from './tools/toc';
 import { Stats } from 'fs';
+import remarkGfm from 'remark-gfm';
 
 function generateMdxDirectory(): Plugin[] {
   let config: ResolvedConfig;
@@ -61,7 +62,7 @@ export default defineConfig({
     sassDts(),
     mdx({
       exclude: './src/stories/**/*.mdx',
-      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter],
+      remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm],
       rehypePlugins: [
         [
           rehypeMermaid,

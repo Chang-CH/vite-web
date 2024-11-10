@@ -3,25 +3,12 @@ const pages = {
   directoryDescription: '',
   pages: [
     {
-      title: 'Clean Architecture in Android',
+      title: 'Creating vite plugins',
       id: 0,
       isMdx: true,
       isFolder: false,
-      createdAt: 1730045831,
-      modifiedAt: 1730643799,
-      route: 'androidCleanArchitecture.mdx',
-      description:
-        'Applying clean architecture principles in Android development',
-      tags: ['android', 'kotlin', 'java'],
-      hidden: true,
-    },
-    {
-      title: 'Creating vite plugins',
-      id: 1,
-      isMdx: true,
-      isFolder: false,
-      createdAt: null,
-      modifiedAt: null,
+      createdAt: 1730731106,
+      modifiedAt: 1730731106,
       route: 'createVitePlugin.mdx',
       description:
         'create a vite plugin that watches and generates metadata for mdx files',
@@ -29,7 +16,7 @@ const pages = {
     },
     {
       title: 'CSS Box Model',
-      id: 2,
+      id: 1,
       isMdx: true,
       isFolder: false,
       createdAt: 1724082416,
@@ -40,7 +27,7 @@ const pages = {
     },
     {
       title: 'Java Synchronization',
-      id: 3,
+      id: 2,
       isMdx: true,
       isFolder: false,
       createdAt: 1724082416,
@@ -48,6 +35,18 @@ const pages = {
       route: 'javaSync.mdx',
       description: 'Data structure for efficient range queries and updates',
       tags: ['java'],
+    },
+    {
+      title: 'Prototypical Inheritance in JavaScript',
+      id: 3,
+      isMdx: true,
+      isFolder: false,
+      createdAt: null,
+      modifiedAt: null,
+      route: 'prototypicalInheritance.mdx',
+      description:
+        'Exploring the differences between prototypical inheritance and classical inheritance',
+      tags: ['javascript', 'java', 'oop'],
     },
   ],
 };

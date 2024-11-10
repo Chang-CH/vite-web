@@ -1,5 +1,6 @@
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { atomOneDark } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import styles from './s.module.css';
 
 export default function CodeBlock({
   className,
@@ -13,10 +14,11 @@ export default function CodeBlock({
     <SyntaxHighlighter
       language={match[1]}
       PreTag="div"
+      className={`${className}`}
       {...properties}
       style={atomOneDark}
     />
   ) : (
-    <code className={className} {...properties} />
+    <code className={`${styles.noLanguage} ${className}`} {...properties} />
   );
 }

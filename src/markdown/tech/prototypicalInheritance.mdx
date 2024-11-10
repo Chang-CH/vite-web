@@ -1,0 +1,191 @@
+---
+title: 'Prototypical Inheritance in JavaScript'
+description: 'Exploring the differences between prototypical inheritance and classical inheritance'
+tags: ['javascript', 'java', 'oop']
+---
+
+# Prototypical Inheritance in JavaScript
+
+You might have heard of prototypical inheritance in JavaScript, but what exactly is it?
+How does it differ from classical inheritance?
+
+## Inheritance and Polymorphism: the basics
+
+Suppose we wish to model `Cat` and `Dog` classes.
+
+Both cats and dogs are animals, which `eat`. A `Cat` can also `meow`, while a `Dog` can `bark`. At the same time, all animals have an age.
+
+```java
+class Animal {
+    public int age;
+
+    public Animal(int age) {
+        this.age = age;
+    }
+
+    public void eat() {
+        System.out.println("Nom Nom");
+    }
+}
+
+class Cat extends Animal {
+    public void meow() {
+        System.out.println("Meow");
+    }
+}
+
+class Dog extends Animal {
+    public void bark() {
+        System.out.println("Bark");
+    }
+}
+```
+
+Further suppose we wish to model a `Kitten` class, which is a `Cat` but sounds a little different when it `meow`s.
+
+```java
+class Kitten extends Cat {
+    @Override
+    public void meow() {
+        System.out.println("Mew");
+    }
+}
+```
+
+When we call the `kitten.meow()`, `"Mew"` will be printed, whereas `kitten.eat()` will print `"Nom Nom"`.
+What we are seeing in action are two things: **inheritance** and **polymorphism**. **Inheritance** models the _IS-A_ relationship between
+`Cat` and `Animal` -- a `Cat` is an `Animal`, and as all animals eat, so can a cat.
+
+**Polymorphism** enables us to override the way a `Kitten` meows. A `Kitten` is a `Cat`, but it meows differently.
+
+## Prototypical Inheritance in JavaScript
+
+For those only familiar with ES6 JavaScript, classical inheritance seems familiar. Let us make something similar in JavaScript:
+
+```js
+class Animal {
+  constructor(age) {
+    this.age = age;
+  }
+
+  eat() {
+    console.log('Nom Nom');
+  }
+}
+
+class Cat extends Animal {
+  meow() {
+    console.log('Meow');
+  }
+}
+
+class Dog extends Animal {
+  bark() {
+    console.log('Bark');
+  }
+}
+
+class Kitten extends Cat {
+  meow() {
+    console.log('Mew');
+  }
+}
+```
+
+This, however, is synctactic sugar for pre ES6 function constructors ([not exactly](https://stackoverflow.com/questions/36419713/are-es6-classes-just-syntactic-sugar-for-the-prototypal-pattern-in-javascript) but for the most part):
+
+```js
+function Animal(age) {
+  this.age = age;
+}
+
+Animal.prototype.eat = function () {
+  console.log('Nom Nom');
+};
+
+function Cat(age) {
+  Animal.call(this, age);
+}
+
+Cat.prototype = new Animal();
+Cat.prototype.meow = function () {
+  console.log('Meow');
+};
+
+function Kitten(age) {
+  Cat.call(this, age);
+}
+Kitten.prototype = new Cat();
+Kitten.prototype.meow = function () {
+  console.log('Mew');
+};
+```
+
+## Under the hood: Method lookup
+
+Suppose we call `kitten.meow()`. How do the different languages determine which implementation to call?
+
+### Java
+
+1. Search the class `Kitten` for the method `meow()`.
+2. Search for the method recursively in the superclasses `Cat` (excluding parent interfaces).
+3. Search for the method in the superinterfaces of `Cat`, searching in parent interfaces if necessary.
+
+### JavaScript
+
+1. Search the object `kitten` for the method `meow()`.
+2. Search the prototype of `kitten` for the method `meow()` recursively.
+
+## Comparing the differences
+
+Prototype objects are directly involved when creating a subclass.
+In Java, `Class` objects representing the class of an object only serve as metadata.
+Modifying the `Class` object will not change instances' behaviour.
+
+```js
+Kitten.prototype.meow = function () {
+  console.log('Mew');
+};
+var kitten = new Kitten(1);
+kitten.meow(); // Mew
+Object.setPrototypeOf(kitten, Dog.prototype);
+kitten.bark(); // Bark
+```
+
+At the same time, because the prototype itself is an object,
+during the creation of `Kitten` we need to create an instance of `Cat` to set as the prototype.
+
+```js
+Kitten.prototype = new Cat();
+```
+
+Calling superclass methods is also quite different. In Java, we use the `super` keyword, whereas in JavaScript it depends:
+
+```js
+function Kitten(age) {
+  Cat.call(this, age); // constructor super(), with context bound to this
+}
+
+Kitten.prototype.parentMeow = function () {
+  Object.getPrototypeOf(Kitten.prototype).meow.call(this);
+};
+```
+
+Note we have to call the parent method `meow` using `meow.call(this)` to ensure the correct context otherwise `this` will refer to the parent object.
+
+See [closures](https://exploringjs.com/es6/ch_arrow-functions.html) to learn more.
+
+## Are ES6 classes actually just synctactic sugar?
+
+Yes and no. The underlying mechanism is still prototypical inheritance.
+
+1. ES6 class prototypes are read only
+2. ES6 classes are not hoisted
+   ```js
+   console.log(Thing); //Uncaught ReferenceError: Thing is not defined
+   class Thing {}
+   ```
+3. Class declarations and methods are always executed in strict mode
+
+There are many more differences -- see [link](https://stackoverflow.com/questions/36419713/are-es6-classes-just-syntactic-sugar-for-the-prototypal-pattern-in-javascript).
+However, the underlying mechanism is still prototypical inheritance.
