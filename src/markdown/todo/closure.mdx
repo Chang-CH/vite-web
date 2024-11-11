@@ -1,0 +1,88 @@
+---
+title: 'Closures and Scopes'
+description: 'Illustrating the concept of closures and scopes in JavaScript and other languages'
+tags: ['javascript', 'java', 'programming concepts']
+---
+
+# Why are closures important?
+
+Closures are a powerful concept in programming languages that allow functions to retain access to variables from their parent scope.
+
+They allow us to make function arguments much more concise -- instead of passing in every argument to a function, the function can simply get the values from its parent scope.
+
+Before diving into how it works, let's take a look at what it enables.
+
+```javascript
+// currying with closures
+function makeAdder(x) {
+    return function(y) {
+        return x + y;
+    };
+}
+
+// Immediately Invoked Function Expression (IIFE)
+const printInaccessibleValue = (value) => {
+    return () => console.log(value);
+}(123);
+printInaccessibleValue(); // 123
+console.log(Object.keys(printInaccessibleValue)); // [] we cannot access value
+```
+
+## How do closures work?
+
+## Common usages
+
+```javascript
+class Factory {
+  constructor() {
+    this.factoryName = 'ASD';
+  }
+
+  getArrow() {
+    return () => console.log(this.factoryName);
+  }
+
+  getFunc() {
+    return function () {
+      console.log(this.factoryName);
+    };
+  }
+}
+const factory = new Factory();
+factory.getArrow()();
+factory.getFunc()();
+```
+
+## TODO: Memory leaks
+
+- Memory leaks due to closures and usememo: https://www.schiener.io/2024-03-03/react-closures
+  - suppose we create a lambda that captures `smallVar`. Further suppose `hugeVar` is also in the same scope.
+  - the lambda will capture `smallVar` and `hugeVar` (since it is in the same scope)
+  - further suppose we keep we memoize the lambda using `useCallback`.
+  - Even after rerender, we are keeping reference to the old hugeVar, which is not garbage collected.
+- Why Java closures are not "closures": https://stackoverflow.com/questions/17204279/does-java-8-support-closures
+  - capturing contexts mean the jvm cannot just destroy stackframes once it has returned
+
+## TODO: var vs let
+
+```javascript
+// see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures#creating_closures_in_loops_a_common_mistake
+res1 = [];
+res2 = [];
+for (let i = 0; i < 10; i++) {
+  var text = 'text' + i; // function scoped: same text is shared across all loops. each loop redeclares text (and thats ok)
+  let text2 = 'text2' + i; // block scoped: different text2 for each loop
+  res.push(function () {
+    console.log(text);
+  });
+  res2.push(function () {
+    console.log(text2);
+  });
+}
+for (const func of res) {
+  func(); // text9 text9 text9...
+}
+for (const func of res2) {
+  func(); // text0 text1 text2...
+}
+```
