@@ -1,0 +1,28 @@
+## TODO: var vs let
+
+```javascript
+// see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures#creating_closures_in_loops_a_common_mistake
+res1 = [];
+res2 = [];
+for (let i = 0; i < 10; i++) {
+  var text = 'text' + i; // function scoped: same text is shared across all loops. each loop redeclares text (and thats ok)
+  let text2 = 'text2' + i; // block scoped: different text2 for each loop
+  res.push(function () {
+    console.log(text);
+  });
+  res2.push(function () {
+    console.log(text2);
+  });
+}
+for (const func of res) {
+  func(); // text9 text9 text9...
+}
+for (const func of res2) {
+  func(); // text0 text1 text2...
+}
+```
+
+1. https://stackoverflow.com/questions/762011/what-is-the-difference-between-let-and-var
+2. http://perfectionkills.com/understanding-delete/
+3. https://262.ecma-international.org/5.1/#sec-10.3
+4. https://stackoverflow.com/questions/1596782/how-can-i-unset-a-javascript-variable

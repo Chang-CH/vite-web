@@ -9,6 +9,7 @@ import CleanBlog from './layouts/CleanBlog';
 import TestDirectory from '@pages/experimental/mdx-directory';
 import mermaid from 'mermaid';
 import MdxDirectory from './layouts/MdxDirectory';
+import Playground from '@pages/experimental/playground';
 
 const SelfHosted = React.lazy(() => import('@pages/selfhosted'));
 const Projects = React.lazy(() => import('@pages/projects'));
@@ -147,6 +148,14 @@ const router = createBrowserRouter([
     element: (
       <Suspense fallback={<StackSpinner />}>
         <TestDirectory />
+      </Suspense>
+    ),
+  },
+  {
+    path: '/experimental/playground',
+    element: (
+      <Suspense fallback={<StackSpinner />}>
+        <Playground />
       </Suspense>
     ),
   },

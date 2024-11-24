@@ -30,6 +30,140 @@ console.log(Object.keys(printInaccessibleValue)); // [] we cannot access value
 
 ## How do closures work?
 
+Closures work by capturing the environment in which they are defined as a `context`. This means that even after the parent scope is supposedly
+no longer accessible, the closure can still access the variables from the parent scope. This is not the same as maintaining a copy
+of the parent scope -- the closure actually maintains a reference to the parent scope, including all variables, used and unused (**At least in theory -- see deep dive**).
+
+```javascript
+function makeCounter() {
+  let count = 0;
+  return [
+    function getter() {
+      return count;
+    },
+    function increment() {
+      count++;
+    },
+  ];
+}
+const [getter, increment] = makeCounter();
+```
+
+In this example, after `makeCounter` has returned, the `count` variable should be inaccessible. However, we can still modify `count`
+using `increment()`, and we can still read `count` using `getter()`.
+
+### Deep dive: JavaScript
+
+There is a comprehensive article on this topic [link](https://javascript.info/closure) this section is based on.
+
+Every variable in JavaScript is actually a property of a special internal object the `LexicalEnvironment` (see: [ECMAscript](https://262.ecma-international.org/5.1/#sec-10.3)).
+Suppose we declare a variable `x` in the global lexical environment.
+
+```javascript
+let x;
+x = 'hello';
+```
+
+1. Initial: `phrase = <uninitialized>`, the variable is already in the environment record, but it is not yet initialized.
+2. Declaration: `phrase = undefined`, the variable is now initialized, but it has no value.
+3. Assignment: `phrase = "hello"`, the variable now has a value.
+
+When a function is created, it captures the `environment record` of the parent scope. This environment record is stored in the function object itself, and is called the `[[Environment]]` property.
+When we attempt to reference a variable in a function, it first searches the function's environment record. If the variable is not found, it searches the parent's environment record, and so on.
+
+```javascript
+let surname = 'Smith';
+let name = 'Jane';
+function sayHi() {
+  let name = 'John';
+  console.log(`Hello, ${name} ${surname}`);
+}
+sayHi(); // Hello, John Smith
+```
+
+#### Optimizations: V8 garbage collector
+
+At this point, you might notice a potential memory leak. Suppose we have a function that captures a small variable from the parent scope. If the function is kept alive, the small variable cannot be
+garbage collected. Further suppose there is also a large variable in the same scope, then in theory the large variable is also kept alive since the function retains the parent scope the large variable
+is in. This is a potential memory leak.
+
+```JavaScript
+function f() {
+  let hugeVar = new Array(1000).fill(0);
+  let smallVar = 1;
+  return function() {
+    console.log(smallVar);
+  };
+}
+```
+
+In reality, many JavaScript engines analyze variable usage, and will remove the large variable if it is obvious the variable will not be used anymore.
+**In particular, V8 engine (Chrome, Edge, Opera) does so, and outer variables will become unavailable in debugging.** Here's a neat example:
+
+```javascript
+let value = 'Surprise!';
+
+function f() {
+  let value = 'the closest value';
+
+  function g() {
+    debugger; // in console: type alert(value); Surprise!
+  }
+
+  return g;
+}
+
+let g = f();
+g();
+```
+
+Interesting behaviour! Now what about non V8 engines? Are we able to emulate this behaviour, possibly with `delete` in non strict mode? (you cant attempt to unqualified names in strict mode)
+The answer is no, which we will explore in a later article. If you are interested, you can read more about them:
+
+1. [StackOverflow](https://stackoverflow.com/questions/1596782/how-can-i-unset-a-javascript-variable): named references are implicitly object properties, so why can't we delete them?
+2. [Understanding Delete](http://perfectionkills.com/understanding-delete/): delete deep dive, and some interesting quirks of `eval`, gecko browsers etc.
+
+### Deep dive: Kotlin
+
+In contrast to languages like JS that capture the entire lexical environment, kotlin instead captures only the local variables themselves. If the local variable is mutable,
+then the variable is autoboxed into a special reference type. This means that **if the variable is reassigned, the closure will see the new value**. Here's an example to illustrate:
+
+```kotlin
+val (a, b) = {
+    var obj = dataC(10);
+    Pair({println(obj.value)}, {obj = dataC(obj.value + 10)});
+}();
+
+a(); // 10
+b();
+a(); // 20
+```
+
+For class properties, the closure will capture the instance of the class itself. Similarly, if the property is reassigned an object, the closure will see the new object.
+Note that other class properties that are not referenced by the closure is eligible for garbage collection, if it is no longer reachable.
+
+```mermaid
+classDiagram
+    Wrapper <|-- Function
+    Wrapper <|-- OuterScope
+    class Wrapper{
+      -Int x
+    }
+
+    class Function{
+      -Wrapper unnamed
+    }
+
+    class OuterScope{
+      -Wrapper unnamed
+    }
+```
+
+### Deep dive: Java
+
+In Java, closures have to be effectively final. This means that the variable cannot be reassigned after it is captured by the closure.
+This is because the closure captures the **actual value** of the variable, not the variable itself. If the outer variable is somehow reassigned, the closure will still see the old value.
+
 ## Common usages
 
 ```javascript
@@ -51,38 +185,4 @@ class Factory {
 const factory = new Factory();
 factory.getArrow()();
 factory.getFunc()();
-```
-
-## TODO: Memory leaks
-
-- Memory leaks due to closures and usememo: https://www.schiener.io/2024-03-03/react-closures
-  - suppose we create a lambda that captures `smallVar`. Further suppose `hugeVar` is also in the same scope.
-  - the lambda will capture `smallVar` and `hugeVar` (since it is in the same scope)
-  - further suppose we keep we memoize the lambda using `useCallback`.
-  - Even after rerender, we are keeping reference to the old hugeVar, which is not garbage collected.
-- Why Java closures are not "closures": https://stackoverflow.com/questions/17204279/does-java-8-support-closures
-  - capturing contexts mean the jvm cannot just destroy stackframes once it has returned
-
-## TODO: var vs let
-
-```javascript
-// see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures#creating_closures_in_loops_a_common_mistake
-res1 = [];
-res2 = [];
-for (let i = 0; i < 10; i++) {
-  var text = 'text' + i; // function scoped: same text is shared across all loops. each loop redeclares text (and thats ok)
-  let text2 = 'text2' + i; // block scoped: different text2 for each loop
-  res.push(function () {
-    console.log(text);
-  });
-  res2.push(function () {
-    console.log(text2);
-  });
-}
-for (const func of res) {
-  func(); // text9 text9 text9...
-}
-for (const func of res2) {
-  func(); // text0 text1 text2...
-}
 ```
