@@ -175,7 +175,9 @@ describe('Rating Component', () => {
   });
 
   describe('Optimistic Toggle', () => {
+    // @ts-expect-error copy paste JS test case from OA
     function validateIconState(ratingIcons, value) {
+      // @ts-expect-error copy paste JS test case from OA
       ratingIcons.forEach((icon, index) => {
         if (index < value) {
           expect(icon.src).toContain(ICONS.STARS.filled);
@@ -235,6 +237,7 @@ describe('Rating Component', () => {
       });
     });
 
+    // @ts-expect-error copy paste JS test case from OA
     function addMockPosition(element, left, right) {
       const width = 100;
       const height = 100;
@@ -364,6 +367,7 @@ describe('Rating Component', () => {
   });
 
   describe('Accessibility', () => {
+    // @ts-expect-error copy paste JS test case from OA
     const fireKey = (container, key, keyCode) => {
       fireEvent.keyDown(container, {
         key: key,
