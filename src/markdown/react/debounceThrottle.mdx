@@ -1,0 +1,75 @@
+---
+title: 'Implement lodash debounce and throttle'
+description: 'Implementing debounce and throttle from scratch'
+tags: ['javascript', 'react', 'UI']
+---
+
+# What is debounce
+
+Debouncing is a technique used to limit the rate at which a function is called. This is especially useful for functions that are called preemptively, such as searching results on user input.
+Note that for situations where throttling is required, debouncing may not be the best solution.
+
+Here is its behaviour:
+
+1. The debounced function is called.
+2. A timer starts ticking for `x` amount of time.
+3. If the debounced function is called again before the timer is up, the timer is reset.
+4. If the timer runs out, the actual function is called.
+
+Notice how the function is only called after no further calls are made for `x` amount of time. For use cases where the goal is to limit the number of calls,
+debouncing makes the function feel sluggish, as it only responds after a certain amount of time has passed. Throttling, on the other hand, works as follows:
+
+1. The throttled function is called.
+2. The actual function is called.
+3. A timer starts ticking for `x` amount of time.
+4. If the throttled function is called again before the timer is up, the function is not called.
+
+## Implementing debounce
+
+Let us walk through how we might implement this function.
+
+1. We need to create a function that takes in a function and a delay. Since debounce has a default value, we also provide it.
+2. In the event that the debounced function was called before, but the timer is not yet up, we need to cancel its execution.
+3. To do this, we use `clearTimeout`, passing in the id of the still running timeout. This id comes from the return value of its `setTimeout`.
+4. We then set a new timeout, which will call the actual function after the delay.
+
+```javascript
+function debouncer(fn, delay = 500) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn(...args);
+    }, delay);
+  };
+}
+
+const debounced = debouncer(text => console.log(text));
+debounced(1); // (no output)
+debounced(2); // (2)
+setTimeout(() => debounced(3), 1000); // 3 after 1.5s
+```
+
+### Implementing throttle
+
+What about `throttle`? let's take a crack at it.
+
+```javascript
+function throttler(fn, delay = 500) {
+  let isRunning = false;
+  return function (...args) {
+    if (!isRunning) {
+      fn(...args);
+      isRunning = true;
+      setTimeout(() => {
+        isRunning = false;
+      }, delay);
+    }
+  };
+}
+
+const throttled = throttler(text => console.log(text));
+throttled(1); // 1
+throttled(2); // (no output)
+setTimeout(() => throttled(3), 1000); // 3 after 1s
+```

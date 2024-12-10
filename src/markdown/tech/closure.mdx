@@ -126,7 +126,8 @@ The answer is no, which we will explore in a later article. If you are intereste
 ### Deep dive: Kotlin
 
 In contrast to languages like JS that capture the entire lexical environment, kotlin instead captures only the local variables themselves. If the local variable is mutable,
-then the variable is autoboxed into a special reference type. This means that **if the variable is reassigned, the closure will see the new value**. Here's an example to illustrate:
+then the variable is autoboxed into a special reference type -- think `Wrapper<Data>` for a field of type `Data`. This means that **if the variable is reassigned, the closure will see the new value**.
+Here's an example to illustrate:
 
 ```kotlin
 val (a, b) = {
@@ -164,25 +165,20 @@ classDiagram
 In Java, closures have to be effectively final. This means that the variable cannot be reassigned after it is captured by the closure.
 This is because the closure captures the **actual value** of the variable, not the variable itself. If the outer variable is somehow reassigned, the closure will still see the old value.
 
-## Common usages
+## Common usages (JavaScript)
+
+For other more fleshed out programming languages, the main use of closures is to reduce the complexity of interacting with external data. Programs that make use of closures can always be rewritten
+using pointers, albeit with increased verbosity.
+
+For languages like JS, however, closures can as workarounds for missing features in the language. Let us take a look at a few examples:
+
+1. **Private variables**: JavaScript used to not have a native way to create private variables. However, we can use closures to create private variables, using an immediately invoked functional expression (IIFE). Note that private properties have since been added by prepending the `#` symbol, like so: `#property`.
 
 ```javascript
-class Factory {
-  constructor() {
-    this.factoryName = 'ASD';
-  }
-
-  getArrow() {
-    return () => console.log(this.factoryName);
-  }
-
-  getFunc() {
-    return function () {
-      console.log(this.factoryName);
-    };
-  }
-}
-const factory = new Factory();
-factory.getArrow()();
-factory.getFunc()();
+const counter = (() => {
+  let count = 0; // count cannot be modified externally
+  return {
+    increment: () => count++,
+  };
+})();
 ```

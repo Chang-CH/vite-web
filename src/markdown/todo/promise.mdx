@@ -1,0 +1,60 @@
+---
+title: 'Implement promise'
+description: 'Implementing the Promise class from scratch'
+tags: ['javascript', 'react', 'UI']
+---
+
+# What is Promise
+
+A promise is an object that represents the eventual completion (or failure) of an asynchronous operation and its resulting value.
+
+```javascript
+class MockPromise {
+    const fn;
+    let status;
+    const thens = [];
+    const _resolve = (value) => {
+        let curr = value;
+        // try catch to reject
+        for (const cb of this.thens) {
+            curr = cb(curr);
+        }
+    };
+    let errorHandler;
+    const _reject = (error) => {
+        if (this.errorHandler) {
+            this.errorHandler(error);
+        }
+        throw error;
+    };
+
+    constructor(fn) {
+        this.fn = fn
+        try {
+            fn(_resolve, _reject)
+        } catch(err) {
+            this._reject(err);
+        }
+    }
+    catch(onError) {
+        this.errorHandler = onError;
+        return this;
+    }
+    then(onSuccess) {
+        this.thens.push(onSuccess);
+        return this;
+    }
+}
+```
+
+## Implementing the constructor
+
+## Implementing resolve
+
+## Implementing reject
+
+## Implementing then
+
+## Implementing catch
+
+## Implementing finally
