@@ -25,9 +25,11 @@ describe('Rating Component', () => {
 
   const ICONS = {
     STARS: {
-      filled: '/icons/stars/filled.svg',
-      empty: '/icons/stars/empty.svg',
-      half: '/icons/stars/half.svg',
+      empty:
+        'https://cdn1.iconfinder.com/data/icons/social-media-rounded-corners/512/Rounded_Facebook_svg-256.png',
+      half: 'https://cdn1.iconfinder.com/data/icons/social-media-rounded-corners/512/Rounded_Pinterest2_svg-256.png',
+      filled:
+        'https://cdn3.iconfinder.com/data/icons/picons-social/57/11-linkedin-64.png',
     },
     SMILEYS: {
       filled: '/icons/smileys/filled.svg',

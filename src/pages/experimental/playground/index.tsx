@@ -1,4 +1,7 @@
 /* eslint-disable */
+
+import StarRating from '@components/stdlib/rating/StarRating';
+
 // @ts-nocheck
 function Playground() {
   const value = 'Surprise!';
@@ -16,7 +19,11 @@ function Playground() {
   let g = f();
   g();
 
-  return <div>Playground</div>;
+  return (
+    <div>
+      <StarRating />
+    </div>
+  );
 }
 
 export default Playground;
