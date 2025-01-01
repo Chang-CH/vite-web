@@ -1,7 +1,17 @@
 import { render, cleanup, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import StarRating from '.';
+import StarRating, { RatingDefaultImages } from '.';
 
+/**
+ * OA Post mortem
+ *
+ * 1. fireEvent.click bubbles the click event to the parent element.
+ *    Star.onclick sets the correct rating, but parent.onclick clears the rating (to implement click away)
+ *    Fixed by removing click away (not required anyways)
+ * 2. missing useEffect in Star to listen to prop.rating changes
+ * 3. Reliance on onHover to set the rating, then onClick saves the hover rating to selected. This is a problem as fireEvent.click
+ *    does not trigger onHover, so the rating is not set correctly. Fixed by directly setting the rating in onClick
+ */
 function hoverIn(
   ratingIcons: Array<Element>,
   hoverIndex: number,
@@ -25,11 +35,9 @@ describe('Rating Component', () => {
 
   const ICONS = {
     STARS: {
-      empty:
-        'https://cdn1.iconfinder.com/data/icons/social-media-rounded-corners/512/Rounded_Facebook_svg-256.png',
-      half: 'https://cdn1.iconfinder.com/data/icons/social-media-rounded-corners/512/Rounded_Pinterest2_svg-256.png',
-      filled:
-        'https://cdn3.iconfinder.com/data/icons/picons-social/57/11-linkedin-64.png',
+      empty: RatingDefaultImages.emptyIcon,
+      half: RatingDefaultImages.halfFilledIcon,
+      filled: RatingDefaultImages.filledIcon,
     },
     SMILEYS: {
       filled: '/icons/smileys/filled.svg',
@@ -168,9 +176,9 @@ describe('Rating Component', () => {
 
       ratingIcons.forEach((icon, index) => {
         if (index <= clickIndex) {
-          expect(icon.src).toContain(ICONS.SMILEYS.filled);
+          expect(icon.src.endsWith(ICONS.SMILEYS.filled)).toBeTruthy();
         } else {
-          expect(icon.src).toContain(ICONS.SMILEYS.empty);
+          expect(icon.src.endsWith(ICONS.SMILEYS.empty)).toBeTruthy();
         }
       });
     });

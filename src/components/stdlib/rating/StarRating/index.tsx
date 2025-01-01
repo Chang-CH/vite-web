@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styles from './s.module.scss';
 
 // Utility function to calculate if the mouse event happened on the left side of the target or the right side.
@@ -12,7 +12,14 @@ const isLessThanHalf = event => {
   return mouseAt <= boundingClientRect.width / 2;
 };
 
+enum State {
+  EMPTY,
+  HALF_FILLED,
+  FILLED,
+}
+
 const Star = ({
+  steps,
   emptyIcon,
   filledIcon,
   halfFilledIcon,
@@ -20,23 +27,34 @@ const Star = ({
   onSelect,
   rating,
 }: {
+  steps: number;
   emptyIcon: string;
   filledIcon: string;
   halfFilledIcon: string;
   onRatingChange: (value: number) => void;
-  onSelect: () => void;
+  onSelect: (amount: number) => void;
   rating: number;
 }) => {
+  const [icon, setIcon] = useState(emptyIcon);
+
+  useEffect(() => {
+    if (rating <= 0) {
+      setIcon(emptyIcon);
+    } else if (rating >= 1) {
+      setIcon(filledIcon);
+    } else if (rating > 0) {
+      setIcon(halfFilledIcon);
+    }
+  }, [rating]);
+
   return (
     <img
-      src={
-        rating < 0.5 ? emptyIcon : rating > 0.5 ? filledIcon : halfFilledIcon
-      }
+      src={icon}
       className="rating-image"
       data-testid="rating-icon"
       alt="rating"
       onMouseMove={event => {
-        if (isLessThanHalf(event)) {
+        if (isLessThanHalf(event) && steps < 1) {
           onRatingChange(0.5);
         } else {
           onRatingChange(1);
@@ -46,35 +64,74 @@ const Star = ({
         width: '5rem',
         height: '5rem',
       }}
-      onClick={onSelect}
+      onClick={event => {
+        if (isLessThanHalf(event) && steps < 1) {
+          onSelect(0.5);
+        } else {
+          onSelect(1);
+        }
+      }}
     />
   );
 };
 
-const StarRating = (props: any) => {
-  const [selected, onSelect] = useState(0);
+const StarRating = ({
+  steps,
+  value,
+  halfFilledIcon,
+  filledIcon,
+  emptyIcon,
+}: {
+  steps?: number;
+  value?: number;
+  halfFilledIcon?: string;
+  filledIcon?: string;
+  emptyIcon?: string;
+}) => {
+  const [selected, onSelect] = useState(value ?? 0);
   const [hover, onHover] = useState<number | null>(null);
+
+  useEffect(() => {
+    onSelect(value ?? 0);
+  }, [value]);
 
   return (
     <div
       tabIndex={0}
       className={`star-rating ${styles.starRatingContainer}`}
       data-testid="star-rating-container"
-      onClick={() => onSelect(hover == selected ? 0 : hover ?? 0)}
       onMouseLeave={() => onHover(null)}
+      onKeyDown={e => {
+        if (e.key === 'ArrowLeft') {
+          onSelect(Math.max(0, selected - (steps ?? 1)));
+        }
+
+        if (e.key === 'ArrowRight') {
+          onSelect(Math.min(5, selected + (steps ?? 1)));
+        }
+
+        if (!isNaN(parseFloat(e.key))) {
+          onSelect(Math.min(5, Math.max(0, parseInt(e.key))));
+        }
+      }}
     >
       {[1, 2, 3, 4, 5].map((rating, index) => {
         return (
           <Star
             key={index}
             rating={(hover ?? selected) - index}
-            onRatingChange={(value: number) => {
-              onHover(index + value);
+            onRatingChange={(val: number) => {
+              onHover(index + val);
             }}
-            onSelect={() => onSelect(hover ?? 0)}
-            emptyIcon={DefaultImages.emptyIcon}
-            halfFilledIcon={DefaultImages.halfFilledIcon}
-            filledIcon={DefaultImages.filledIcon}
+            steps={steps ?? 1}
+            onSelect={val => {
+              onSelect(index + val === selected ? 0 : index + val);
+            }}
+            emptyIcon={emptyIcon ?? RatingDefaultImages.emptyIcon}
+            halfFilledIcon={
+              halfFilledIcon ?? RatingDefaultImages.halfFilledIcon
+            }
+            filledIcon={filledIcon ?? RatingDefaultImages.filledIcon}
           />
         );
       })}
@@ -82,7 +139,7 @@ const StarRating = (props: any) => {
   );
 };
 
-const DefaultImages = {
+export const RatingDefaultImages = {
   emptyIcon:
     'https://cdn1.iconfinder.com/data/icons/social-media-rounded-corners/512/Rounded_Facebook_svg-256.png',
   halfFilledIcon:
