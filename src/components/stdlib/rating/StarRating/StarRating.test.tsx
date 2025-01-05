@@ -2,16 +2,6 @@ import { render, cleanup, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import StarRating, { RatingDefaultImages } from '.';
 
-/**
- * OA Post mortem
- *
- * 1. fireEvent.click bubbles the click event to the parent element.
- *    Star.onclick sets the correct rating, but parent.onclick clears the rating (to implement click away)
- *    Fixed by removing click away (not required anyways)
- * 2. missing useEffect in Star to listen to prop.rating changes
- * 3. Reliance on onHover to set the rating, then onClick saves the hover rating to selected. This is a problem as fireEvent.click
- *    does not trigger onHover, so the rating is not set correctly. Fixed by directly setting the rating in onClick
- */
 function hoverIn(
   ratingIcons: Array<Element>,
   hoverIndex: number,

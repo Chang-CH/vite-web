@@ -6,7 +6,7 @@ tags: ['javascript', 'react', 'UI']
 
 # Implement a rating component
 
-This was an OA question I received from a company. The task was to implement a rating component in React, to be completed in an hour and a half.
+Pre screening Online Assessment for a New Graduate Front End role.
 
 ## Specifications
 
@@ -118,4 +118,10 @@ Initially, the file is filled with boilerplate code. Note the following:
 
 _The component has these data-testid attributes for test cases and certain classes and ids for rendering purposes. They should not be changed._
 
-## Pitfalls
+## Reflection
+
+- Initially I designed this component with the idea that on hover updates the displayed rating, and click saves the current displayed rating.
+  This approach does not work as in react testing library, the `click` event does not trigger the `mouseover` event.
+- I had originally implemented the parent container to have an onclick to act as a click away feature. In the browser this did not
+  affect the components functionality, but in testing the click event bubbled to the parent, and cleared the values after the click.
+  Perhaps this was due to the order of events triggering being different in web vs testing.

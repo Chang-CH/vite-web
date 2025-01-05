@@ -3,8 +3,20 @@ const pages = {
   directoryDescription: '',
   pages: [
     {
-      title: 'Creating vite plugins',
+      title: 'Closures and Scopes',
       id: 0,
+      isMdx: true,
+      isFolder: false,
+      createdAt: 1733829172,
+      modifiedAt: 1733829172,
+      route: 'closure.mdx',
+      description:
+        'Illustrating the concept of closures and scopes in JavaScript and other languages',
+      tags: ['javascript', 'java', 'programming concepts'],
+    },
+    {
+      title: 'Creating vite plugins',
+      id: 1,
       isMdx: true,
       isFolder: false,
       createdAt: 1730731106,
@@ -16,7 +28,7 @@ const pages = {
     },
     {
       title: 'CSS Box Model',
-      id: 1,
+      id: 2,
       isMdx: true,
       isFolder: false,
       createdAt: 1724082416,
@@ -27,7 +39,7 @@ const pages = {
     },
     {
       title: 'Java Synchronization',
-      id: 2,
+      id: 3,
       isMdx: true,
       isFolder: false,
       createdAt: 1724082416,
@@ -38,15 +50,26 @@ const pages = {
     },
     {
       title: 'Prototypical Inheritance in JavaScript',
-      id: 3,
+      id: 4,
       isMdx: true,
       isFolder: false,
-      createdAt: null,
-      modifiedAt: null,
+      createdAt: 1731249413,
+      modifiedAt: 1731341455,
       route: 'prototypicalInheritance.mdx',
       description:
         'Exploring the differences between prototypical inheritance and classical inheritance',
       tags: ['javascript', 'java', 'oop'],
+    },
+    {
+      title: 'Theme switching in React',
+      id: 5,
+      isMdx: true,
+      isFolder: false,
+      createdAt: null,
+      modifiedAt: null,
+      route: 'themeSwitching.mdx',
+      description: 'Implementing a theme switcher',
+      tags: ['javascript', 'react', 'UI'],
     },
   ],
 };

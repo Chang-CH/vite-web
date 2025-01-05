@@ -1,0 +1,13 @@
+$primary: #f5165d;
+$secondary: #3086e9;
+$accent: orange;
+
+$text: #fff;
+$background: #13011e;
+
+@mixin headline_1_bold {
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+// TODO:: create constants for font sizes etc.

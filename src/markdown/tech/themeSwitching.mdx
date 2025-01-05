@@ -1,0 +1,208 @@
+---
+title: 'Theme switching in React'
+description: 'Implementing a theme switcher'
+tags: ['javascript', 'react', 'UI']
+---
+
+# Implementing a theme switcher in React
+
+As an android developer, implementing dark mode is pretty straightforward -- define two separate resource files for light and dark mode,
+for example `res/drawable` and `res/drawable-night`. For web developers, this can also be simple, using css media queries and css variables:
+
+```css
+:root {
+  --content-primary: #000;
+  --content-secondary: #f00;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --content-primary: #fff;
+    --content-secondary: #0ff;
+  }
+}
+
+button {
+  color: var(--content-primary);
+  background-color: var(--content-secondary);
+}
+```
+
+However, what if we want to add a toggle button to switch between light and dark mode?
+For android, this is as simple as `AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)`.
+For web developers, however, this is not as straightforward. Let us explore how we can implement this in React.
+
+## implementing a light dark toggle in react
+
+For simplistic web apps, we can save the mode in a state and choose the correct class name based on the current state:
+
+```jsx
+import React, { useState } from 'react';
+
+function App() {
+  const [darkMode, setDarkMode] = useState(false);
+
+  return (
+    <div className={darkMode ? 'dark' : 'light'}>
+      <button onClick={() => setDarkMode(!darkMode)}>Toggle</button>
+    </div>
+  );
+}
+```
+
+To persist this data, we can use `localStorage`:
+
+```js
+localStorage.setItem('darkMode', darkMode);
+
+// and to retrieve it
+const [darkMode, setDarkMode] = useState(false);
+```
+
+## Scaling up with context
+
+But what if we have multiple components that need to know the current theme? Prop drilling the theme down to each component is not ideal.
+
+We can use React context to provide the theme to all components:
+
+```jsx
+import React, { useState, createContext, useContext } from 'react';
+
+const ThemeContext = createContext();
+
+function App({ children }) {
+  const [darkMode, setDarkMode] = useState(false);
+
+  return (
+    <ThemeContext.Provider value={{ darkMode, setDarkMode }}>
+      <div className={darkMode ? 'dark' : 'light'}>
+        <button onClick={() => setDarkMode(!darkMode)}>Toggle</button>
+        {children}
+      </div>
+    </ThemeContext.Provider>
+  );
+}
+```
+
+And to use the theme in a child component:
+
+```jsx
+function Child() {
+  const { darkMode, setDarkMode } = useContext(ThemeContext);
+
+  return (
+    <div className={darkMode ? 'dark' : 'light'}>
+      <button onClick={() => setDarkMode(!darkMode)}>Child toggle</button>
+    </div>
+  );
+}
+```
+
+This is quite similar to Material UI's `ThemeProvider` and `useTheme` hooks.
+
+```jsx
+import { ThemeProvider, useTheme } from '@material-ui/core/styles';
+
+function App({ children }) {
+  const [darkMode, setDarkMode] = useState(false);
+
+  return (
+    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+      <div className={darkMode ? 'dark' : 'light'}>
+        <button onClick={() => setDarkMode(!darkMode)}>Toggle</button>
+        {children}
+      </div>
+    </ThemeProvider>
+  );
+}
+
+function DeepChild() {
+  const theme = useTheme();
+  return <span>{`spacing ${theme.spacing}`}</span>;
+}
+```
+
+## Performance considerations
+
+Using context and states can be expensive, since react components are rerendered when the context changes (see virtual DOM diffing).
+Memoizing may not be a ideal as well, since the theme change can affect many components and memoizing the entire app is not feasible.
+Instead, how about updating CSS variables directly?
+
+```jsx
+export default function CssVariableBenchmark() {
+  const leftCol = useRef(true);
+  const [rightCol, setRightCol] = useState(true);
+  return (
+    <>
+      <div className={styles.flex}>
+        <div className={styles.grid}>
+          {Array.from({ length: ELEMENT_COUNT * ELEMENT_COUNT }).map(
+            (_, index) => (
+              <div key={index} className={styles.squareVariable} />
+            )
+          )}
+        </div>
+        <div className={styles.grid}>
+          {Array.from({ length: ELEMENT_COUNT * ELEMENT_COUNT }).map(
+            (_, index) => (
+              <div
+                className={styles.squareInline}
+                key={index}
+                style={{
+                  backgroundColor: rightCol ? 'orange' : 'pink',
+                }}
+              />
+            )
+          )}
+        </div>
+      </div>
+      <div className={styles.flex}>
+        <button
+          onClick={() => {
+            leftCol.current = !leftCol.current;
+            document.documentElement.style.setProperty(
+              '--square-color',
+              leftCol.current ? 'cyan' : 'red'
+            );
+          }}
+        >
+          change left
+        </button>
+        <button
+          onClick={() => {
+            setRightCol(!rightCol);
+          }}
+        >
+          change right
+        </button>
+      </div>
+    </>
+  );
+}
+```
+
+and the corresponding css:
+
+```css
+.squareVariable {
+  width: 0.5vh;
+  height: 0.5vh;
+  background-color: var(--square-color);
+  border: 1px solid purple;
+}
+
+.squareInline {
+  width: 0.5vh;
+  height: 0.5vh;
+  background-color: orange;
+  border: 1px solid purple;
+}
+```
+
+Notice how the left column uses `useRef` instead of `useState` -- we do not want react to rerender the entire app! just the DOM repainting will suffice.
+
+Let us look at the performance!
+
+![css variable benchmark](/markdown/tech/themeVariable.png)
+![inline style benchmark](/markdown/tech/themeState.png)
+
+modifying the theme by state takes on average 145ms, while modifying the theme by css variables takes on average 40ms. Quite a difference!

@@ -10,6 +10,9 @@ import TestDirectory from '@pages/experimental/mdx-directory';
 import mermaid from 'mermaid';
 import MdxDirectory from './layouts/MdxDirectory';
 import Playground from '@pages/experimental/playground';
+import { Provider } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import rootReducer from './redux/reducers';
 
 const SelfHosted = React.lazy(() => import('@pages/selfhosted'));
 const Projects = React.lazy(() => import('@pages/projects'));
@@ -175,8 +178,14 @@ mermaid.initialize({
   },
 });
 
+const store = configureStore({
+  reducer: rootReducer,
+});
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   </React.StrictMode>
 );

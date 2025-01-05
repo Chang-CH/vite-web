@@ -1,12 +1,12 @@
 /* eslint-disable */
 
-import StarRating from '@components/stdlib/rating/StarRating';
+import CssVariableBenchmark from '@pages/benchmark/cssVariables';
 
 // @ts-nocheck
 function Playground() {
   return (
     <div>
-      <StarRating />
+      <CssVariableBenchmark />
     </div>
   );
 }

@@ -12,12 +12,6 @@ const isLessThanHalf = event => {
   return mouseAt <= boundingClientRect.width / 2;
 };
 
-enum State {
-  EMPTY,
-  HALF_FILLED,
-  FILLED,
-}
-
 const Star = ({
   steps,
   emptyIcon,
@@ -141,11 +135,10 @@ const StarRating = ({
 
 export const RatingDefaultImages = {
   emptyIcon:
-    'https://cdn1.iconfinder.com/data/icons/social-media-rounded-corners/512/Rounded_Facebook_svg-256.png',
+    'https://cdn.icon-icons.com/icons2/2091/PNG/512/star_icon_128523.png',
   halfFilledIcon:
-    'https://cdn1.iconfinder.com/data/icons/social-media-rounded-corners/512/Rounded_Pinterest2_svg-256.png',
-  filledIcon:
-    'https://cdn3.iconfinder.com/data/icons/picons-social/57/11-linkedin-64.png',
+    'https://cdn.icon-icons.com/icons2/259/PNG/128/ic_star_half_128_28866.png',
+  filledIcon: 'https://cdn.icon-icons.com/icons2/1077/PNG/512/star_77949.png',
 };
 
 export default StarRating;

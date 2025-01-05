@@ -1,0 +1,33 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(100, 0.5vh);
+  grid-template-rows: repeat(100, 0.5vh);
+  gap: 1px;
+}
+
+:root {
+  --square-color: red;
+}
+
+.squareVariable {
+  width: 0.5vh;
+  height: 0.5vh;
+  background-color: var(--square-color);
+  border: 1px solid purple;
+}
+
+#squareStatic {
+  width: 0.5vh;
+  height: 0.5vh;
+  background-color: orange;
+  border: 1px solid purple;
+}
+
+.flex {
+  display: flex;
+  flex-direction: row;
+}
+
+[data-dark-enabled='dark'] {
+  --square-color: cyan;
+}
