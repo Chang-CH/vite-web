@@ -1,0 +1,85 @@
+---
+title: 'Android setup'
+description: 'Setting up for Android development'
+tags: ['kotlin', 'android']
+---
+
+# Setting up for Android development
+
+This guide assumes a windows setup. For other OS, steps may vary, a quick search for alternative commands should suffice.
+
+## Environment setup
+
+### Tools needed
+
+- [Android Studio](https://developer.android.com/studio)
+- [JDK](https://www.azul.com/downloads/?package=jdk#zulu) (zulu tends to be faster)
+
+### Convenience tools
+
+1. `scrcpy` - a tool to mirror your android device on your computer. Use `scrcpy -d` to run. Note that this will install adb for us.
+
+```sh
+winget install --exact Genymobile.scrcpy
+```
+
+### Troubleshooting
+
+- ADB server unresponsive: restart the server with `adb kill-server` and `adb start-server`.
+  If kill server does not work, terminate `adb.exe` in task manager and then start adb with `adb start-server`.
+
+## Project setup (data binding way)
+
+For this section, we will set up a simple project. We will be using a few basic plugins:
+
+1. [ViewBinding](https://developer.android.com/topic/libraries/view-binding): Synctactic sugar for `findViewById`.
+   Not to be confused with _DataBinding_
+
+```java
+// build.gradle.kts
+
+android {
+  viewBinding {
+    enable = true
+  }
+  buildFeatures {
+    viewBinding = true
+  }
+}
+```
+
+2. Dagger Hilt: Dependency injection library for Android.
+   Allows us to use the compiler to handle injecting dependencies (say our repository) into our viewmodel constructors and so on.
+
+```java
+// build.gradle.kts
+plugins {
+  kotlin("kapt")
+  id("com.google.dagger.hilt.android")
+}
+
+dependencies {
+  // Hilt
+  implementation("com.google.dagger:hilt-android:$hilt_version")
+  kapt("com.google.dagger:hilt-android-compiler:$hilt_version")
+}
+```
+
+```java
+// app/build.gradle.kts
+plugins {
+  id("com.google.dagger.hilt.android") version "2.48.1" apply false
+}
+```
+
+3. Retrofit: A type-safe HTTP client for Android and Java.
+
+```java
+dependencies {
+  //Retrofit
+  implementation("com.squareup.retrofit2:retrofit:$retrofit_version")
+  implementation("com.squareup.retrofit2:converter-gson:$retrofit_version")
+  implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+  implementation("com.squareup.retrofit2:converter-scalars:$retrofit_version")
+}
+```

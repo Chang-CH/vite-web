@@ -1,0 +1,42 @@
+---
+title: 'Viewbinding vs Databinding'
+description: 'Viewbinding vs Databinding in Android'
+tags: ['kotlin', 'android']
+---
+
+# Viewbinding vs Databinding
+
+## ViewBinding
+
+automatically creates a binding class for each XML layout file present in that module. Suppose we have a layout `my_layout.xml`,
+then a binding class `MyLayoutBinding` is created. This class has references to all the views in the layout.
+
+This makes our code much more concise and readable, allowing us to avoid using `findViewById` for each view we want to access.
+
+## DataBinding
+
+Data binding is a superset of view binding. It allows us to bind data to our views directly in the XML file.
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="model"
+            type="com.ozaltun.bookstore.model.Book" />
+    </data>
+</layout>
+```
+
+note a few changes:
+
+1. There must be a root `<layout>` tag.
+2. We can use `<data>` tag to define variables that we can bind to.
+
+## Comapring the two
+
+Personally, I prefer ViewBinding over DataBinding, for a few reasons:
+
+1. Viewbinding is builds much faster
+2. DataBinding adds unnecessary complexity to the view layer, and can make debugging more of a hassle.

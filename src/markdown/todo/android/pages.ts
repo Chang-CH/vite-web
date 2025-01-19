@@ -1,0 +1,40 @@
+const pages = {
+  directoryTitle: 'Android',
+  directoryDescription: '',
+  pages: [
+    {
+      title: 'Viewbinding vs Databinding',
+      id: 0,
+      isMdx: true,
+      isFolder: false,
+      createdAt: null,
+      modifiedAt: null,
+      route: 'binding.mdx',
+      description: 'Viewbinding vs Databinding in Android',
+      tags: ['kotlin', 'android'],
+    },
+    {
+      title: 'Infinite scrolling in a viewpager',
+      id: 1,
+      isMdx: true,
+      isFolder: false,
+      createdAt: null,
+      modifiedAt: null,
+      route: 'nestedInfiniteScroll.mdx',
+      description: 'Viewbinding vs Databinding in Android',
+      tags: ['kotlin', 'android'],
+    },
+    {
+      title: 'Android setup',
+      id: 2,
+      isMdx: true,
+      isFolder: false,
+      createdAt: null,
+      modifiedAt: null,
+      route: 'setup.mdx',
+      description: 'Setting up for Android development',
+      tags: ['kotlin', 'android'],
+    },
+  ],
+};
+export default pages;

@@ -1,0 +1,97 @@
+---
+title: 'Infinite scrolling in a viewpager'
+description: 'Viewbinding vs Databinding in Android'
+tags: ['kotlin', 'android']
+---
+
+# Infinite scrolling in a viewpager2
+
+Recently I had to implement a feature involving some legacy code. This screen had a viewpager2,
+with each page having an infinite scrolling recyclerviews of height `wrap_content`.
+Each recyclerview also had nested scrolling disabled, since scroll events were not properly intercepted.
+This meant that each fragment in the viewpager had potentially different heights, which could change at runtime (not predetermined).
+
+## Problem #1: differing heights
+
+`viewpager2`, as it turns out, does not ([and will not](https://issuetracker.google.com/issues/133135685)) support differing height children.
+
+![viewpager2 broken](/markdown/tech/viewpagerDiffBroken.mp4)
+
+This is because under the hood, `viewpager2` uses a recyclerview, which does not trigger a layout recalculation when switching between tabs.
+
+### Existing solution
+
+The existing solution in my team's repository was the obvious low handing fruit -- whenever the fragment's height changes, update the viewpager's height.
+Whenever a new page is selected, get the new page's height and update the viewpager's height.
+
+To change the height on page select, a listener was added to the viewpager:
+
+```kotlin
+binding.vpMain.registerOnPageChangeCallback(object: OnPageChangeCallback() {
+    override fun onPageSelected(position: Int) {
+        super.onPageSelected(position)
+        val view = getViewAtPosition(position)
+        val container = view.getParentContainer()
+        // ... calculate layoutparams and update viewpager height if different
+    }
+})
+```
+
+Each fragment implemented a `getParentContainer(): View` method that returned the root view in the fragment. The callback obtains the root view via this
+method and calculates the new height based on the root view's height.
+
+To change the height of the viewpager when the child fragment's height changes, a callback was passed to each fragment:
+
+```kotlin
+fun fetchMoreData() {
+    repository.fetchMoreData {
+        rvAdapter.submitList(it)
+        adjustHeight(500L)
+    }
+}
+
+fun adjustHeight(delay: Long = 0L) {
+    cancelRenderJob()
+    runBlocking {
+        delay(delay)
+        onRenderFinish?.invoke()
+    }
+}
+```
+
+The obvious problem here was that when the new list data was added, the view had not rendered yet.
+This meant that the height of the recyclerview was not yet updated, and adjusting the viewpager height now would result in an incorrect measurement.
+The solution was to delay the height adjustment until the view had rendered, which was estimated to be 500ms.
+
+### Problems with the existing solution
+
+There were plenty of issues with this solution:
+
+1. Every UI change in each fragment that could affect height needs to remember to call `adjustHeight`. List updates, error views, **EVERYTHING**.
+2. If the `adjustHeight` delay was too short, the viewpager would not have updated its height yet, resulting in incorrect measurements.
+3. If the `adjustHeight` delay was too long, the pager would seem unresponsive
+
+## Solution v1: re-layout on resume
+
+The first solution is to have the viewpager set to a height of `wrap_content` and then have each fragment re-layout itself on resume.
+
+```kotlin
+override fun onResume() {
+    super.onResume()
+    binding.root.requestLayout()
+}
+```
+
+This simple solution kind of works, as we can see below:
+
+![viewpager2 somewhat fixed](/markdown/tech/viewPagerDiffFix1.mp4)
+
+There are some issues, though: while we are swiping, the viewpager height is not updated.
+We see the new fragment clipped to the height of the previous fragment for a split second.
+
+## Solution v2: intercepting scroll events
+
+The second solution is one suggested by a colleague: Have all fragments be the same height, and intercept scroll events properly so we do not need
+`nestedScrollingEnabled = false`.
+
+_To be continued..._
