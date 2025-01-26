@@ -94,4 +94,63 @@ We see the new fragment clipped to the height of the previous fragment for a spl
 The second solution is one suggested by a colleague: Have all fragments be the same height, and intercept scroll events properly so we do not need
 `nestedScrollingEnabled = false`.
 
+```java
+class CustomNestedScrollView @JvmOverloads constructor(
+  context: Context,
+  attrs: AttributeSet? = null,
+  defStyleAttr: Int = 0
+) : NestedScrollView(context, attrs, defStyleAttr) {
+
+  private var canScrollUp = true
+  private var canScrollDown = true
+  private var oldY = 0.0f
+  private val velocityTracker = VelocityTracker.obtain()
+
+  init {
+    // overscroll causes parent to overscroll instead of passing scroll event to child
+    overScrollMode = OVER_SCROLL_NEVER
+  }
+
+  override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
+    return when (ev.action) {
+      MotionEvent.ACTION_DOWN -> {
+        // Check if this NestedScrollView can scroll
+        canScrollUp = canScrollVertically(-1)
+        canScrollDown = canScrollVertically(1)
+        oldY = ev.getY()
+        parent.requestDisallowInterceptTouchEvent(false)
+        super.onInterceptTouchEvent(ev)
+      }
+
+      MotionEvent.ACTION_MOVE -> {
+        val delta = ev.getY() - oldY
+        if ((delta > 0 && canScrollUp)) {
+          super.onInterceptTouchEvent(ev)
+        } else if (delta < 0 && canScrollDown) {
+          // If this view can still scroll, intercept child events
+          true
+        } else {
+          // Otherwise, allow parent to intercept
+          super.onInterceptTouchEvent(ev)
+        }
+      }
+
+      else -> super.onInterceptTouchEvent(ev)
+    }
+  }
+
+  override fun onTouchEvent(ev: MotionEvent): Boolean {
+    val delta = ev.getY() - oldY
+    if (delta > 0 && !canScrollUp) {
+      // Let this view scroll up if it can
+      parent.requestDisallowInterceptTouchEvent(false)
+    } else {
+      // Prevent the parent from intercepting while this view can still scroll
+      parent.requestDisallowInterceptTouchEvent(true)
+    }
+    return super.onTouchEvent(ev)
+  }
+}
+```
+
 _To be continued..._
