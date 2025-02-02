@@ -59,19 +59,18 @@ fun adjustHeight(delay: Long = 0L) {
 }
 ```
 
-The obvious problem here was that when the new list data was added, the view had not rendered yet.
-This meant that the height of the recyclerview was not yet updated, and adjusting the viewpager height now would result in an incorrect measurement.
-The solution was to delay the height adjustment until the view had rendered, which was estimated to be 500ms.
+`onRenderFinish` is a callback passed from the parent fragmetn that sets the viewpager's height to that of the child. Since the child's height has not been changed
+when the data is first added, a delay had to be set before the viewpager height could be recalculated.
 
 ### Problems with the existing solution
 
 There were plenty of issues with this solution:
 
 1. Every UI change in each fragment that could affect height needs to remember to call `adjustHeight`. List updates, error views, **EVERYTHING**.
-2. If the `adjustHeight` delay was too short, the viewpager would not have updated its height yet, resulting in incorrect measurements.
-3. If the `adjustHeight` delay was too long, the pager would seem unresponsive
+2. If the `adjustHeight` delay was shorter than the time it took to render the new data, the pager would seem unresponsive, as the viewpager height would be shorter than the content, making scrolling impossible.
+3. If the `adjustHeight` delay was longer than the rerender, the viewpager would recalculate height wrongly, leading to content getting clipped until the next `adjustHeight`.
 
-## Solution v1: re-layout on resume
+## Solution 1: re-layout on resume
 
 The first solution is to have the viewpager set to a height of `wrap_content` and then have each fragment re-layout itself on resume.
 
@@ -89,9 +88,9 @@ This simple solution kind of works, as we can see below:
 There are some issues, though: while we are swiping, the viewpager height is not updated.
 We see the new fragment clipped to the height of the previous fragment for a split second.
 
-## Solution v2: intercepting scroll events
+## Solution 2: intercepting scroll events
 
-The second solution is one suggested by a colleague: Have all fragments be the same height, and intercept scroll events properly so we do not need
+The second solution to have all fragments be the same height, and intercept scroll events properly so we do not need
 `nestedScrollingEnabled = false`.
 
 ```java
@@ -153,4 +152,8 @@ class CustomNestedScrollView @JvmOverloads constructor(
 }
 ```
 
-_To be continued..._
+This custom `NestedScrollView` prioritises parent scrolling when scrolling down, and child scrolling when scrolling up, giving the appearance of the entire
+activity being one long view. It does this by requesting the parent layout to not intercept touch events when scrolling up, and intercepting touch events when scrolling down.
+
+Note that for all nested scrollable views other than the last one, we need to disable overscroll -- this is because overscroll takes priority over
+touch intercept, consuming the `ACTION_MOVE` event before the child can intercept it. This is done by setting `overScrollMode = OVER_SCROLL_NEVER`, which we do on init to disable it by default.
