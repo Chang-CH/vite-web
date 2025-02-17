@@ -11,7 +11,6 @@ import { generatePagesTs } from './tools/toc';
 import { Stats } from 'fs';
 import remarkGfm from 'remark-gfm';
 import wasm from 'vite-plugin-wasm';
-import topLevelAwait from 'vite-plugin-top-level-await';
 
 function generateMdxDirectory(): Plugin[] {
   let config: ResolvedConfig;
@@ -60,8 +59,6 @@ function generateMdxDirectory(): Plugin[] {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    wasm(),
-    topLevelAwait(),
     react(),
     sassDts(),
     mdx({
@@ -78,6 +75,7 @@ export default defineConfig({
       ],
     }),
     generateMdxDirectory(),
+    wasm(),
   ],
   css: {
     preprocessorOptions: {
