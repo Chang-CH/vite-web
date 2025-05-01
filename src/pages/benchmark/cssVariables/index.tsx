@@ -18,7 +18,6 @@ export default function CssVariableBenchmark() {
           {Array.from({ length: ELEMENT_COUNT * ELEMENT_COUNT }).map(
             (_, index) => (
               <div
-                // @ts-expect-error only use id here
                 id={styles.squareStatic}
                 key={index}
                 style={{
