@@ -23,6 +23,7 @@
   },
   "author": "Chang-CH",
   "devDependencies": {
+    "@chang-ch/vite-plugin-mdx-directory": "link:C:/Users/third/Desktop/fe-lib/vite-plugin-mdx-directory",
     "@chromatic-com/storybook": "1.6.1",
     "@jest/globals": "^29.7.0",
     "@mdx-js/rollup": "^3.0.1",

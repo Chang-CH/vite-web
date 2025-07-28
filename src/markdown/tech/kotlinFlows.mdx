@@ -1,0 +1,187 @@
+---
+title: 'Kotlin Flow Deep Dive'
+description: 'A detailed analysis of Kotlin flows'
+tags: ['android', 'kotlin']
+---
+
+# Kotlin Flow Deep Dive
+
+Kotlin flows are a commonly used mechanism for handling asynchronous data.
+This article explores the different flows available in detail, and how these differences manifest in practical android development.
+
+## What are flows?
+
+Flows are a type of asynchronous data stream in Kotlin, allowing you to emit multiple values over time. In Android developement,
+they are often compared to LiveData, which are **Android Specific** and **Lifecycle Aware**.
+
+{/* TODO: What lifecycle aware means + how to replicate lifecycle awareness, repeatonlifecycle */}
+
+## How do flows work?
+
+### Initialisation
+
+Flows are created using the `flow` builder, which allows you to emit values asynchronously.
+The flow is cold, meaning that it does not start emitting values until it is collected.
+
+```kotlin
+flow {
+    for (i in 1..3) {
+        println("Begin Emission: $i")
+        delay(50)
+        emit(i)
+        println("Emitted: $i")
+    }
+}
+```
+
+### Flow collection
+
+To collect values from a flow, you use the `collect` terminal operator. This operator is a suspending function, meaning it can be called from a coroutine or another suspending function.
+
+```kotlin
+launch {
+    flow.collect { value ->
+        println("Collected: $value")
+    }
+}
+```
+
+Note that the `collect` function is a suspending function, meaning it will suspend the coroutine until the flow has emitted all its values.
+For flows like `StateFlow` or `SharedFlow` which **never completes**, any code written after `collect` will not run.
+
+```kotlin
+val job = launch {
+    stateFlow.collect { value ->
+        println("StateFlow Collected: $value")
+    }
+    println("This will never be printed for StateFlow")
+}
+job.cancel() // Cancels the collection
+```
+
+Suppose we are done with the flow and want to stop collecting values. In that case, we can use `cancel()` on the
+coroutine scope or the job that is collecting the flow, seen above.
+
+### Backpressure
+
+Backpressure is a situation where the producer emits values faster than the consumer can process them.
+For how to handle backpressure, refer to the article on [Kotlin Flow Backpressure Handling](./kotlinFlowsBackpressure.mdx).
+Briefly, we can use operators like `conflate()`, which drops intermediate values, and `buffer()` to manage backpressure in flows.
+
+That aside, we can also use `tryEmit()` to handle backpressure on the producer side. Unlike `emit()`, which
+suspends the producer until the value is collected on all collectors, `tryEmit()` attempts to emit a value without suspending.
+If the value cannot be emitted immediately, it returns `false` instead of suspending the producer.
+
+### Switching dispatchers
+
+You can switch the dispatcher of a flow using the `flowOn` operator. This allows you to specify which dispatcher the flow should run on, separate from the collector's dispatcher.
+
+```kotlin
+flow {
+    for (i in 1..3) {
+        emit(i) // 2. IO Thread
+    }
+}
+    .flowOn(Dispatchers.IO) // 1. Causes previous emissions to run on IO dispatcher
+    .filter { it % 2 == 0 } // 4. Filter on Main Thread
+    .flowOn(Dispatchers.Main) // 3. Switch back to Main Thread
+    .flowOn(Dispatchers.Default) // Ignored: flowOn's are fused
+```
+
+There are a few points to note:
+
+1. The `flowOn` operator automatically fuses adjacent `flowOn` calls, meaning that only the first one is effective.
+2. on `SharedFlow`, the `flowOn` operator does not change the dispatcher of the flow itself since it does not have an execution context by itself.
+
+```kotlin
+val sharedFlow = MutableSharedFlow<Int>()
+
+launch {
+    sharedFlow
+        .flowOn(Dispatchers.IO) // Ignored: SharedFlow does not have an execution context
+        .collect { value ->
+            println("Collected: $value")
+        }
+}
+
+withContext(Dispatchers.Main) {
+    sharedFlow.emit(1) // This will run on the Main Thread
+}
+```
+
+## Flows vs LiveData
+
+Flows and LiveData are both used for handling asynchronous data in Android, but they have some key differences:
+
+1. **Lifecycle Awareness**: LiveData is lifecycle-aware, automatically manages the subscription and unsubscription
+   based on the lifecycle of the component observing it. Flows are not lifecycle-aware by default, but you can use `repeatOnLifecycle` to achieve similar behavior.
+2. **Main Thread Affinity**: LiveData is always observed on the main thread, while flows can be collected on any dispatcher.
+3. **Backpressure Handling**: Flows provide built-in mechanisms for handling backpressure, such as `conflate()`
+   and `buffer()`, while LiveData does not have built-in backpressure handling.
+
+Both SharedFlow, StateFlow, and LiveData are hot flows, meaning they can emit values even when there are no
+collectors.
+
+## StateFlow vs SharedFlow
+
+`StateFlow` and `SharedFlow` are often compared to each other due to their similarities,
+but this question is flawed -- `StateFlow` _is_ a `SharedFlow` with some additional features.
+
+1. Current value: `StateFlow` always has a current value, accessible using via `Flow.value`.
+   `SharedFlow` does not have a `value` property. As such, `StateFlow` requires an initial value, while `SharedFlow` does not.
+2. Replay: `StateFlow` always replays the last emitted value to new collectors, while `SharedFlow` needs to be configured to replay a specified number of values.
+3. Diffing mechanism: When a new value is emitted to a `StateFlow`, the value will only be collected if the diffing algorithm determines that the new value is different from the previous one. `SharedFlow` does not have this diffing mechanism, meaning it will always collect the new value regardless of whether it is different from the previous one.
+
+## StateFlow Diffing
+
+As mentioned above, `StateFlow` has a diffing mechanism that prevents unnecessary emissions when the new value is the same as the previous one.
+
+This can lead to unexpected gotchas -- For example, suppose we want to use a `StateFlow` to model event emissions:
+When a new `Loading` event is collected, we want to show a loading indicator for 5 seconds.
+
+```kotlin
+sealed interface UiState {
+    object Loading: UiState
+    data class Content(val amount: Int): UiState
+
+}
+
+fun main() = runBlocking<Unit> {
+    val flow = MutableStateFlow<UiState>(UiState.Loading)
+
+    val job = launch{
+        flow.collect { value ->
+            when(value) {
+                is UiState.Loading -> println("LOADING")
+                is UiState.Content -> println("collected: ${value.amount}")
+            }
+        }
+    }
+
+    launch{
+        flow.value = UiState.Loading // No emission, same loading object
+        flow.value = UiState.Loading // No emission, same loading object
+        flow.value = UiState.Content(1) // Emission, different value
+        flow.value = UiState.Content(1) // No emission, same value
+        flow.value = UiState.Content(2) // Emission, different value
+        job.cancel()
+    }
+}
+```
+
+As shown in the example above, the `Loading` state is not emitted again when it is set to the same value.
+
+Note that diffing is based on `equals()`, so if you use a mutable object as the state, you need to
+ensure that the `equals()` method is implemented correctly. For data classes, **constructor** properties are diffed, but additional properties are not.
+
+```kotlin
+data class User(val id: Int, val list: List<Int>) {
+    var name: String = ""
+}
+
+val mutableList = mutableListOf(1, 2, 3)
+val u1 = User(1, mutableList).apply { name = "Alice" }
+mutableList.add(4) // Mutating the list does not affect equality
+val u2 = User(1, mutableList).apply { name = "Bob" }
+println(u1 == u2) // true, because id is the only constructor property
+```

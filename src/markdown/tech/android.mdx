@@ -1,0 +1,242 @@
+---
+title: 'Android notes'
+description: 'Notes for android development'
+tags: ['android', 'kotlin']
+---
+
+# Android notes
+
+## Components of an Android app
+
+1. Activities
+   - Represents a single screen with a user interface.
+   - An app can have multiple activities, each representing a different screen or functionality.
+2. Services
+   - background services (e.g. playing music, downloading files) without user interaction.
+   - foreground services (e.g. ongoing notifications, user-visible tasks).
+   - bound services (e.g. providing data to activities).
+3. Broadcast Receivers
+   - Listens for and responds to system-wide broadcast announcements.
+   - Examples include battery low notifications, network connectivity changes, etc.
+4. Content Providers
+   - Manages shared app data and provides a secure, structured interface for other apps to access that data.
+   - Examples include contacts, media files, etc.
+   - uses a unique URI per content provider, functions like a sql database.
+5. Intents
+   - Used to start activities, services, or deliver broadcasts.
+   - Used by deeplinks to navigate between different parts of an app or between apps.
+
+## JVM, DVM, and ART
+
+- **JVM (Java Virtual Machine)**: The runtime environment for Java applications. It executes Java bytecode and provides platform independence.
+- **DVM (Dalvik Virtual Machine)**: The original runtime environment for Android applications. It was designed to run on low-memory devices and execute Dalvik bytecode.
+- **ART (Android Runtime)**: The successor to DVM, introduced in Android 5.0 (Lollipop). It compiles applications to native code upon installation, improving performance and reducing memory usage.
+
+## Deeplinks and Intents
+
+There are 2 kinds of intents in Android:
+
+1. **Implicit Intents**: Do not specify a specific activity to open, but rather a general action or category. The system will find the best match based on the intent filters defined in the manifest.
+   - Example: `android.intent.action.VIEW` with a specific URI.
+2. **Explicit Intents**: Specify a specific activity to open.
+   - Example: `Intent(this, MainActivity::class.java)`.
+
+Deeplinks are a type of intent. In the Android manifest, you can define deeplinks using intent filters.
+This allows your app to respond to specific URLs or URI patterns.
+
+For example, to handle a deeplink to `https://example.com/product/123`, you would define an intent filter in your manifest like this:
+
+```xml
+<activity android:name=".ProductActivity">
+    <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data
+            android:scheme="https"
+            android:host="example.com"
+            android:pathPattern="/product/.*" />
+    </intent-filter>
+</activity>
+```
+
+Some deeplinks use their own scheme, such as `app://product/123`, which can be defined similarly:
+
+```xml
+<activity android:name=".ProductActivity">
+    <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+        <data
+            android:scheme="app"
+            android:host="product"
+            android:pathPattern="/.*" />
+    </intent-filter>
+</activity>
+```
+
+## RecyclerView vs LinearLayout vs LazyColumn
+
+1. **RecyclerView**: Has built in recycling, reusing views that are no longer visible to save memory. It is more efficient for large lists and provides better performance.
+   - Requires a lot of boilerplate: adapter, view holder, layout manager.
+   - Supports different layouts (e.g. grid, staggered).
+   - built in support for animations (with built in list diff), item decorations.
+   - nested scrolling might lead to complicated scroll issues.
+   - much more testable and flexible than LinearLayout.
+2. **LinearLayout**: A simple layout that arranges its children in a single row or column. It does not have built-in recycling, so it is not suitable for large lists.
+   - Must remember to clear the views when updating the list.
+3. **LazyColumn**: A composable function in Jetpack Compose that lazily loads items as they are scrolled into view. It is similar to RecyclerView but is designed for declarative UI.
+   - Automatically handles recycling and view binding.
+
+## Activity and lifecycle
+
+1. `onCreate()`: called when activity first created. Bind views, set up listeners, etc.
+2. `onStart()`: called when activity becomes visible to the user.
+3. `onResume()`: called when activity starts interacting with the user (e.g. after `onStart` or when coming back from background).
+4. `onPause()`: called when another activity comes into the foreground (but current activity still visible).
+   - App can become killed if a higher priority app needs memory.
+   - If not killed and user returns, `onResume()` is called.
+5. `onStop()`: called when activity is no longer visible to the user (e.g. when another activity is started).
+   - App can become killed if a higher priority app needs memory.
+   - If user returns, `onRestart()` is called, then `onStart()`, then `onResume()`.
+6. `onDestroy()`: called when activity is being explicitly destroyed.
+   - called when backpressed, `finish()` is called, or when recreated (e.g. config change, rotate screen)
+   - It **will not be called if the app is killed** (like in onStop, system kills it).
+   - Use `onPause()` or `onStop()` to save state, as `onDestroy()` may not be called.
+
+## Fragment and lifecycle
+
+1. `onAttach()`: called when the fragment is attached to its parent activity.
+2. `onCreate()`: called when the fragment is created. Initialize non-UI components here.
+3. `onCreateView()`: called to create the fragment's view hierarchy. Root view is available to be attached to here, so inflate the layout here.
+4. `onViewCreated()`: called after the view is created. Set up views and listeners here.
+5. `onStart()`: called when the fragment becomes visible to the user.
+6. `onResume()`: called when the fragment starts interacting with the user. (similar to activity lifecycle). Can fetch saved states here.
+7. `onPause()`: called when the user is leaving the fragment. Save states here.
+8. `onStop()`: called when the fragment is no longer visible to the user.
+9. `onDestroyView()`: called when the fragment's view hierarchy is being destroyed. Clean up views and listeners here.
+10. `onDestroy()`: called when the fragment is being destroyed. Clean up non-UI components here.
+11. `onDetach()`: called when the fragment is detached from its parent activity.
+
+## Context
+
+Context provides access to application-specific resources and classes, as well as up-calls for application-level operations such as launching activities,
+broadcasting intents, and accessing databases.
+
+1. **Application Context**: The context of the entire application. It is tied to the lifecycle
+   of the application and can be used to access resources, databases, and preferences.
+   - Use `applicationContext` to get the application context.
+   - Suitable for long-lived operations that need to access resources or services throughout the app's lifecycle.
+2. **Activity Context**: The context of a specific activity. It is tied to the lifecycle of the activity and can be used to access resources, views, and services related to that activity.
+   - Use `this` or `getContext()` in an activity to get the activity context.
+   - For fragments, use `requireActivity()` or `requireContext()` to get the activity context.
+   - most commonly used to show dialogs, toasts, and start activities.
+3. **Service Context**: The context of a service.
+   - generally used to access system services like notifications.
+
+## MVVM architecture
+
+MVVM (Model-View-ViewModel) is a design pattern that separates the UI logic from the business logic in Android applications.
+
+It consists of three main components:
+
+1. **Model**: Represents the data and business logic of the application. It is responsible for fetching, storing, and processing data.
+   - Can be a local database, remote API, or any other data source.
+2. **View**: Represents the UI of the application. It is responsible for displaying data to the user and handling user interactions.
+3. **ViewModel**: Acts as a bridge between the Model and the View. It holds the data and business logic, and exposes it to the View through LiveData or StateFlow.
+   - It is responsible for handling user interactions and updating the Model.
+   - It survives configuration changes (e.g. screen rotation) and retains its state.
+
+This architecture is a very event driven pattern, heavily relying on flows and reactive programming.
+Here's a sample flow:
+
+1. User changes a filter in the UI. `viewModel.onFilterChange(filter)` is called.
+2. The ViewModel receives the filter change event and updates its state.
+3. The ViewModel fetches the filtered data from the Model (e.g. database or API) and updates its LiveData or StateFlow.
+4. The View observes the LiveData or StateFlow and updates the UI with the new data.
+
+## Dependency Injection vs Service Locator
+
+Dependency Injection (DI) and Service Locator are both design patterns used to manage dependencies in software applications, but they have different approaches and use cases.
+
+### Dependency Injection (DI)
+
+- A design pattern that allows a class to receive its dependencies from an external source rather than creating them itself.
+- Dependencies are provided to a class through its constructor, properties, or methods.
+- Promotes loose coupling, testability, and maintainability.
+- Commonly used in frameworks like Dagger, Hilt, and Koin in Android development.
+- Example:
+
+  ```kotlin
+  class UserRepository @Inject constructor(private val apiService: ApiService) {
+      // ...
+  }
+  ```
+
+  Notes:
+
+  1. When a class normally injected via DI is instantiated manually, it will not have its dependencies injected.
+     In such cases, you can use the `@AssistedInject` annotation to inject dependencies manually.
+  2. Alternatively, install the components in Singleton scope and use module accessors to get the dependencies.
+
+### Service Locator
+
+- A design pattern that provides a central registry (the service locator) to retrieve instances of services or dependencies.
+- The class requesting a dependency asks the service locator for the instance, which is responsible for creating or returning the existing instance.
+
+example:
+
+```kotlin
+class UserRepository {
+    private val apiService = ServiceLocator.getApiService(SomeService::class.java)
+    // ...
+}
+```
+
+```kotlin
+// in the api package
+ServiceLocator.register(SomeService::class.java, SomeServiceImpl())
+```
+
+### When to use which
+
+In most cases, Dependency Injection is preferred over Service Locator because it promotes better testability and maintainability. However, there are scenarios where Service Locator can be useful:
+
+1. Inter module communication: When you need to share dependencies between different modules or components that are not directly related.
+2. Legacy code: When working with legacy code that is not designed for DI, Service Locator can be a simpler solution to manage dependencies without significant refactoring.
+
+Note that for IMC, an event bus might be useful as well (such as RxJava).
+
+## Local storage
+
+Local storage in Android can be achieved using several methods, depending on the type and amount of data you need to store.
+
+1. **Shared Preferences**: Mostly a key value pair store, used to store small amounts of data
+2. **DataStore**: A modern alternative to Shared Preferences, providing a more type-safe and efficient way to store key-value pairs or typed objects.
+   - Preferences DataStore: functionally similar to Shared preferences
+   - Proto DataStore: uses Protocol Buffers to store typed objects, providing better performance and type safety.
+
+### Shared Preferences vs DataStore
+
+#### Shared Preferences
+
+- Simple key-value storage.
+- Synchronous API, `apply()` can block the main thread.
+- `apply()` and `commit()` do not have error handling.
+- Not type-safe, as it only stores primitive types (String, int, boolean, etc.). Runtime errors not easily caught.
+- Not suitable for large amounts of data or complex objects (stored in memory)
+
+**Usage in OKX**:
+
+1. Coachmark dismiss state
+2. JWT signature for API calls (user signs message with private key, server authenticates and returns JWT token, JWT token included in header for non critical encrypted API)
+3. User preferences (e.g. theme, language)
+
+#### DataStore
+
+- Jetpack library for storing key-value pairs or typed objects.
+- supported from API 14+
+- Asynchronous API, uses Kotlin Coroutines or Flow for data access.
+- Provides error handling and supports transactions.
+- Type-safe, can store complex objects using Protocol Buffers.

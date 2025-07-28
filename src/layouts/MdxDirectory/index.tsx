@@ -5,7 +5,7 @@ import Tag from '@components/stdlib/tag';
 import { FaClock } from 'react-icons/fa';
 import { useLoaderData } from 'react-router-dom';
 
-type MdxDirectoryMeta = {
+export type MdxDirectoryMeta = {
   directoryTitle: string;
   directoryDescription: string;
   pages: Array<{

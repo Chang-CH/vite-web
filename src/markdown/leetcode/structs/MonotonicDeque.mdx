@@ -1,0 +1,47 @@
+---
+title: 'Monotonic Deque'
+description: 'Data structure for efficient range queries and updates'
+tags: ['structs']
+---
+
+# Monotonic Deque
+
+A **Monotonic Deque** is a data structure that maintains elements in a specific order, either increasing or decreasing, allowing for efficient access to the minimum or maximum element in a sliding window.
+
+## Invariant
+
+Suppose `deque[i] = k`, and `nums[k] = x`, then:
+
+- `deque[i]` stores the index of the `i`th smallest element in the current window.
+- for all indexes `j > k`, `nums[j] >= nums[k]`.
+
+## Intuition
+
+Suppose we want to find all contiguous subarrays where the difference between the maximum and minimum elements is at most `k`.
+We can use a monotonic deque to efficiently maintain the maximum and minimum elements in the current window.
+
+### Case 1: append normal element
+
+```python
+k = 4
+# [8, 4], _5_, 15
+# queue: {4, 8}
+```
+
+Here, instead of inserting the element `5` in (i.e. `{4, 5, 8}`), we pop the back of the queue until the order is maintained, resulting in `{4, 5}`.
+Reason being if we eventually find an element `15` that is greater than `5` by more than `k`, we need to remove elements from the back until `5` anyways, including `8`.
+
+```python
+# [8, 4, 5], _15_
+# queue: {4, 5}
+# condition triggered, pop back until order is maintained
+# 8, 4, [5, 15]
+# queue: {5, 15}
+```
+
+## Operations
+
+- **Insert**: Add an element to the deque while maintaining the order.
+  1. If the deque is empty, add the element.
+  2. If the element is greater than the last element in a decreasing deque, remove elements from the back until the order is maintained.
+  3. Add the element to the back of the deque.

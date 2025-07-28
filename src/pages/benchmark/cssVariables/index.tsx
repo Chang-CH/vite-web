@@ -18,7 +18,7 @@ export default function CssVariableBenchmark() {
           {Array.from({ length: ELEMENT_COUNT * ELEMENT_COUNT }).map(
             (_, index) => (
               <div
-                id={styles.squareStatic}
+                className={styles.squareStatic}
                 key={index}
                 style={{
                   backgroundColor: rightCol ? 'orange' : 'pink',

@@ -1,6 +1,8 @@
 import MdxDirectory from '../../../layouts/MdxDirectory';
-import pageJson from '@markdown/selfhosted/pages.ts';
+// import pages from '@markdown/article2/pages.ts';
 
 export default function TestDirectory() {
-  return <MdxDirectory mdxData={pageJson} />;
+  // TODO: restore md functionality
+  // return <MdxDirectory mdxData={pages} />;
+  return <MdxDirectory />; // Placeholder for actual data
 }

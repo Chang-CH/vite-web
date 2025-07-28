@@ -46,6 +46,9 @@ dependencies:
     version: 4.0.0
 
 devDependencies:
+  '@chang-ch/vite-plugin-mdx-directory':
+    specifier: link:C:/Users/third/Desktop/fe-lib/vite-plugin-mdx-directory
+    version: link:../fe-lib/vite-plugin-mdx-directory
   '@chromatic-com/storybook':
     specifier: 1.6.1
     version: 1.6.1(react@18.3.1)
